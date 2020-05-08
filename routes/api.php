@@ -21,4 +21,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('/login', 'AuthController@login');
     Route::post('/register', 'AuthController@register');
     Route::post('/logout', 'AuthController@logout');
+    Route::post('/confirmation/{token}', 'AuthController@confirm');
+    Route::post('/generate', 'AuthController@generate');
+
 });
