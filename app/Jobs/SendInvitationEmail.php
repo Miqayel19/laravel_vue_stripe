@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Mail\RegisterEmail;
+use App\Mail\InvitationEmail;
 use App\Mail\TokenGeneratedEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Bus\Queueable;
@@ -11,7 +11,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class SendEmailAfterRegistration implements ShouldQueue
+class SendInvitationEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -20,10 +20,10 @@ class SendEmailAfterRegistration implements ShouldQueue
      *
      * @return void
      */
-    protected $user;
-    public function __construct($user)
+    protected $info;
+    public function __construct($info)
     {
-        $this->user = $user;
+        $this->info = $info;
     }
 
     /**
@@ -33,8 +33,8 @@ class SendEmailAfterRegistration implements ShouldQueue
      */
     public function handle()
     {
-        $to  = $this->user->email;
+        $to  = $this->info['email'];
 
-        Mail::to($to)->send(new RegisterEmail($this->user));
+        Mail::to($to)->send(new InvitationEmail($this->info));
     }
 }

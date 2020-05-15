@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Mail\RegisterEmail;
 use App\Mail\TokenGeneratedEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Bus\Queueable;
@@ -11,7 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class SendEmailAfterRegistration implements ShouldQueue
+class SendTokenGeneratedEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -35,6 +34,6 @@ class SendEmailAfterRegistration implements ShouldQueue
     {
         $to  = $this->user->email;
 
-        Mail::to($to)->send(new RegisterEmail($this->user));
+        Mail::to($to)->send(new TokenGeneratedEmail($this->user));
     }
 }

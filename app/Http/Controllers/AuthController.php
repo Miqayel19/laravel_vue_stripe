@@ -7,6 +7,7 @@ use App\User;
 use App\Http\Services\UserService;
 use Carbon\Carbon;
 use App\Jobs\SendEmailAfterRegistration;
+use App\Jobs\SendTokenGeneratedEmail;
 use Illuminate\Http\Request;
 use App\Http\Requests\RegisterRequest;
 use Illuminate\Support\Facades\Hash;
@@ -36,14 +37,15 @@ class AuthController extends Controller
         ];
         $user = $userService->create($credentials);
         SendEmailAfterRegistration::dispatch($user);
-        return response()->json(['message' => 'Successfully registered!']);
+        return new SuccessResource((object)['message' => 'Successfully registered']);
+
     }
 
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
         if (! $token = auth('api')->attempt($credentials)) {
-            return response()->json(['error' => 'Invalid_credentials'], 401);
+            return new FailedResource((object)['message' => 'Invalid credentials']);
         }
 
         return $this->respondWithToken($token);
@@ -57,7 +59,15 @@ class AuthController extends Controller
     public function logout()
     {
         auth('api')->logout();
-        return response()->json(['message' => 'Successfully logged out']);
+    }
+    /**
+     * Refresh a token.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refresh()
+    {
+        return $this->respondWithToken(auth('api')->refresh());
     }
 
     /**
@@ -107,10 +117,9 @@ class AuthController extends Controller
             'status' => "Inactive"
         ];
         $user = $userService->update($credentials,$user->id);
-        SendEmailAfterRegistration::dispatch($user);
+        SendTokenGeneratedEmail::dispatch($user);
         return new SuccessResource((object)['message' => 'Auth token generated,check Email for Confirmation']);
     }
-
     public function guard()
     {
         return \Auth::Guard('api');

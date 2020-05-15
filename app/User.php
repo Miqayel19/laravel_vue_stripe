@@ -53,8 +53,13 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
-//    public function resumes()
-//    {
-//        return $this->hasMany(Resume::class);
-//    }
+    public function accounts()
+    {
+        return $this->belongsToMany('App\Account','account_users')->withPivot([
+        'role',
+        'confirmed',
+        'account_token',
+        'account_token_generated',
+    ]);
+    }
 }

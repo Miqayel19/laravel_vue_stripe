@@ -22,4 +22,5 @@ class UserService implements UserInterface
     {
         return $this->user->where('id', $id)->update($credentials);
     }
+
 }

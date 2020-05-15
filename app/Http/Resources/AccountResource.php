@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SuccessResource extends JsonResource
+class AccountResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,7 +16,8 @@ class SuccessResource extends JsonResource
     {
        return [
            'code' => 200,
-           'message' => $this->message,
+           'data' => $this->data,
+           'message' =>$this->message
        ];
     }
 }

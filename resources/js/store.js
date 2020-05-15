@@ -9,7 +9,7 @@ export default {
         isLogged:!!user,
         registeredUser: null,
         reg_error:null,
-        resumes:[]
+        accounts:[]
     },
     getters:{
         welcome(state){
@@ -30,8 +30,8 @@ export default {
         registeredUser(state){
             return state.registeredUser;
         },
-        resumes(state){
-            return state.resumes
+        accounts(state){
+            return state.accounts
         },
 
     },
@@ -62,22 +62,22 @@ export default {
             localStorage.removeItem('user')
             state.currentUser = null
         },
-        updateResumes(state,payload){
-            state.resumes = payload
+        updateAccounts(state,payload){
+            state.accounts = payload
         }
     },
     actions:{
         login(context){
             context.commit('login')
         },
-        getResumes(context){
-            axios.get('/api/resumes',{
+        getAccounts(context){
+            axios.get('/api/account',{
                 headers:{
                     'Authorization':`Bearer ${context.state.currentUser.token}`
                 }
             })
                 .then((response) => {
-                    context.commit('updateResumes', response.data.resumes);
+                    context.commit('updateAccounts', response.data.data);
                 })
         }
     }

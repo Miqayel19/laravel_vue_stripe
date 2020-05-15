@@ -6,7 +6,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav">
                     <template v-if="!currentUser">
                         <li>
                             <router-link to="/login" class="nav-link">Login</router-link>
@@ -17,14 +17,14 @@
                     </template>
                     <template v-else>
                         <li>
-                            <router-link to="/resumes" class="nav-link"> My resumes</router-link>
+                            <router-link to="/account" class="nav-link"> My accounts</router-link>
                         </li>
                         <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false" aria-haspopup="true">
-                                {{ currentUser.name }} <span class="caret"></span>
+                            <a id="navdrop" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false" aria-haspopup="true">
+                                {{ currentUser.name }}
                             </a>
 
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <div class="dropdown-menu" aria-labelledby="navdrop">
                                 <a href="#" @click.prevent="logout" class="dropdown-item">Logout</a>
                             </div>
                         </li>
