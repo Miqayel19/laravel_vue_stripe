@@ -24,10 +24,10 @@ class AccountRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|min:2',
+            'name' => 'required|string|',
             'phone' => 'required|numeric|',
-            'address' => 'required|string|min:3',
-            'country' => 'required|string|min:3',
+            'address' => 'required|string|',
+            'country' => 'required|string|',
             'status' => 'string',
         ];
     }

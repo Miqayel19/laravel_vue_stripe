@@ -39,7 +39,6 @@ class AccountController extends Controller
         }
         return new AccountResource((object)['data' => $account,'message' =>'Successfully fetched']);
     }
-
     public function store(AccountService $accountService,AccountRequest $request)
     {
         $credentials = [
@@ -51,7 +50,6 @@ class AccountController extends Controller
         ];
         $account = $accountService->create($credentials);
         $accountService->attachUser();
-//        $account->users()->attach($this->user, array("role"=>'owner', "confirmed"=>true,'account_token' => Str::random(),'account_token_generated' => date('Y-m-d H:i:s', time())));
         if ($account) {
             $accounts = $accountService->index($this->user->id);
             return new AccountResource((object)['data' => $accounts]);
@@ -97,14 +95,18 @@ class AccountController extends Controller
         $userAccount = $user->accounts()->where('account_id',$request->acc_id)->first();
         if(!$userAccount && $account){
             $account->users()->attach($user, array("role"=>'member', "confirmed"=>false,'account_token' => $accountToken,'account_token_generated' => date('Y-m-d H:i:s', time())));
+            $info = [];
+            $info['account_id'] = $account->id;
+            $info['email'] = $request->member_email;
+            $info['account_token'] = $accountToken;
+            SendInvitationEmail::dispatch($info);
+            return new SuccessResource((object)['message' => 'Successfully sent!']);
         }
-        $info = [];
-        $info['account_id'] = $account->id;
-        $info['email'] = $request->member_email;
-        $info['account_token'] = $accountToken;
-        $info['email'] = $request->member_email;
-        SendInvitationEmail::dispatch($info);
-        return new SuccessResource((object)['message' => 'Successfully sent!']);
+        else{
+            return new FailedResource((object)['message' => 'This user already attached to  account']);
+        }
+
+
     }
     public function confirm($token,$id)
     {
@@ -114,14 +116,17 @@ class AccountController extends Controller
             if($getAccount){
                 $end = Carbon::now();
                 $start = Carbon::parse($getAccount->account_token_generated);
-                $dif_time = $end->diffInHours($start);
-                if($dif_time > 24){
+                $difTime = $end->diffInHours($start);
+                if($difTime > 24){
                     $getAccount->update(['confirmed'=>false]);
                     return new FailedResource((object)['message' => 'Account Token time expired']);
                 }else {
                     $getAccount->update(['confirmed'=>true]);
                     return new SuccessResource((object)['message' => 'Your Invitation complete,congratulations']);
                 }
+            }
+            else{
+                return new FailedResource((object)['message' => 'Account with that token  not found']);
             }
         }
         else{
