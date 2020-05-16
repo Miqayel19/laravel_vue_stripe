@@ -102,12 +102,18 @@
 
                 if (!this.account.name) {
                     this.errors.push("Name required")
+                }else if(this.account.name.length < 3){
+                    this.errors.push("Name must contains minimum 3 characters")
                 }
                 if (!this.account.address) {
                     this.errors.push("Address required")
+                }else if(this.account.address.length < 4){
+                    this.errors.push("Address must contains minimum 4 characters")
                 }
                 if (!this.account.country) {
                     this.errors.push("Country required")
+                }else if(this.account.country.length < 4){
+                    this.errors.push("Country must contains minimum 3 characters")
                 }
                 if (!this.account.phone) {
                     this.errors.push("Phone required")

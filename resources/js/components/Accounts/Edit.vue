@@ -104,10 +104,8 @@
                         this.$router.push('/account');
                     });
                 }
-
                 e.preventDefault();
             },
-
         }
     }
 </script>

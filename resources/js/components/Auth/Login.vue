@@ -51,15 +51,14 @@
                 this.$store.dispatch('login');
                 login(this.$data.form)
                     .then((res) => {
-                        this.$store.commit("loginSuccess", res);
-                        this.$router.push({path: '/'});
+                            this.$store.commit("loginSuccess", res);
+                            this.$router.push({path: '/'});
                     })
-                    .catch((error) => {
-                        this.$store.commit("loginFailed", {error});
-                    });
+                    .catch(error => {
+                        this.$store.commit('loginFailed', {error});
+                    })
             }
         },
-
     }
 </script>
 

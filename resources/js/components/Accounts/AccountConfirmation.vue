@@ -30,10 +30,11 @@
                     "Authorization":`Bearer ${this.currentUser.token}`,
                 }
             }).then(res => {
-                this.message  = res.data.data.message;
                 if(res.data.data.code === 200){
+                    this.message  = res.data.data.message;
                     this.status = true;
                 } else if(res.data.data.code === 400){
+                    this.message  = res.data.data.error;
                     this.status = false
                 }
             }).catch(err => {});

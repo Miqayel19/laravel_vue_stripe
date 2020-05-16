@@ -25,7 +25,14 @@ class AuthController extends Controller
         $this->middleware('auth:api', ['except' => ['login', 'register','confirm','generate']]);
     }
 
-    public function register(UserService $userService ,RegisterRequest $request)
+    /**
+     * POST /api/auth/register
+     * Register a new user
+     *
+     * @param RegisterRequest $request
+     * @return SuccessResource
+     */
+    public function register(UserService $userService,RegisterRequest $request)
     {
         $credentials = [
             'name' => $request->name,
@@ -38,27 +45,33 @@ class AuthController extends Controller
         $user = $userService->create($credentials);
         SendEmailAfterRegistration::dispatch($user);
         return new SuccessResource((object)['message' => 'Successfully registered']);
-
     }
 
+    /**
+     * POST /api/auth/login
+     * Login user
+     *
+     * @param Request $request
+     *  @return FailedResource|\Illuminate\Http\JsonResponse
+     */
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-        if (! $token = auth('api')->attempt($credentials)) {
-            return new FailedResource((object)['message' => 'Invalid credentials']);
+        if (!$token = auth('api')->attempt($credentials)) {
+            return new FailedResource((object)['error' => 'Unauthorized']);
         }
-
         return $this->respondWithToken($token);
     }
 
     /**
      * Log the user out (Invalidate the token).
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return SuccessResource
      */
     public function logout()
     {
         auth('api')->logout();
+        return new SuccessResource((object)['message' => 'Successfully Log out']);
     }
     /**
      * Refresh a token.
@@ -86,6 +99,14 @@ class AuthController extends Controller
             'expires_in' => auth('api')->factory()->getTTL() * 60
         ]);
     }
+
+    /**
+     * POST /api/auth/confirmation/{token}
+     * Confirm user Authentication Token
+     *
+     * @param  $token
+     * @return FailedResource|SuccessResource
+     */
     public function confirm(UserService $userService,$token)
     {
         $user = User::where('auth_token', $token)->first();
@@ -98,7 +119,7 @@ class AuthController extends Controller
                     'status' => "Inactive"
                 ];
                 $userService->update($credentials,$user->id);
-                return new FailedResource((object)['message' => 'Auth Token time expired']);
+                return new FailedResource((object)['error' => 'Auth Token time expired']);
             }else {
                 $credentials = [
                     'status' => "Active"
@@ -109,6 +130,13 @@ class AuthController extends Controller
 
         }
     }
+    /**
+     * POST /api/auth/generate
+     * Generate new  user Authentication Token
+     *
+     * @param  Request $request
+     * @return SuccessResource
+     */
     public function generate(UserService $userService,Request $request){
         $user = User::where('auth_token', $request->token)->first();
         $credentials = [

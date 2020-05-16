@@ -23,22 +23,38 @@ class AccountController extends Controller
     {
         $this->user = auth('api')->user();
     }
-
+    /**
+     * Get Authenticated user accounts.
+     *
+     * @return AccountResource
+     */
     public function index(AccountService $accountService)
-
     {
         $accounts = $accountService->index($this->user->id);
         return new AccountResource((object)['data' => $accounts,'message' =>'Successfully fetched']);
     }
-
+    /**
+     * GET /api/account/{id}
+     * Get single account with id
+     *
+     * @param $id
+     * @return FailedResource|AccountResource
+     */
     public function show(AccountService $accountService,$id)
     {
         $account = $accountService->show($this->user->id,$id);
         if (!$account) {
-            return new SuccessResource((object)['message' => 'Sorry, account with id ' . $id . ' cannot be found']);
+            return new FailedResource((object)['error' => 'Sorry, account with id ' . $id . ' cannot be found']);
         }
         return new AccountResource((object)['data' => $account,'message' =>'Successfully fetched']);
     }
+    /**
+     * POST /api/account/new
+     * Create Account
+     *
+     * @param AccountRequest $request
+     * @return FailedResource|AccountResource
+     */
     public function store(AccountService $accountService,AccountRequest $request)
     {
         $credentials = [
@@ -53,10 +69,18 @@ class AccountController extends Controller
         if ($account) {
             $accounts = $accountService->index($this->user->id);
             return new AccountResource((object)['data' => $accounts]);
-        }else {
-            return new FailedResource((object)['message' => 'Account can not be added']);
+        }
+        else {
+            return new FailedResource((object)['error' => 'Account can not be added']);
         }
     }
+    /**
+     * PUT /api/account/{id}
+     * Update account
+     *
+     * @param AccountRequest $request  $id
+     * @return FailedResource|AccountResource
+     */
     public function update(AccountService $accountService,AccountRequest $request,$id)
     {
         $credentials = [
@@ -70,23 +94,39 @@ class AccountController extends Controller
         if ($account) {
             $accounts = $accountService->index($this->user->id);
             return new AccountResource((object)['message' => 'Account  updated','data' => $accounts]);
-        }else {
-            return new FailedResource((object)['message' => 'Account can not be updated']);
+        }
+        else {
+            return new FailedResource((object)['error' => 'Account can not be updated']);
         }
     }
+    /**
+     * DELETE /api/account/{id}
+     * Delete account
+     *
+     * @param   $id
+     * @return FailedResource|AccountResource
+     */
     public function destroy(AccountService $accountService,$id)
     {
         $account = $accountService->show($this->user->id,$id);
         if(!$account) {
-            return new FailedResource((object)['message' => 'Sorry, account with id ' . $id . ' cannot be found']);
+            return new FailedResource((object)['error' => 'Sorry, account with id ' . $id . ' cannot be found']);
         }
         if ($accountService->detachUser()) {
             $accounts =  $accountService->index($this->user->id);
             return new AccountResource((object)['message' => 'Account  deleted','data' => $accounts]);
-        } else {
-            return new FailedResource((object)['message' => 'Account can not be deleted']);
+        }
+        else {
+            return new FailedResource((object)['error' => 'Account can not be deleted']);
         }
     }
+    /**
+     * POST /api/account/sendInvitation
+     * Send invitation to other user for attaching to the account
+     *
+     * @param Request $request
+     * @return FailedResource|SuccessResource
+     */
     public function invite(Request $request)
     {
         $accountToken = Str::random();
@@ -103,11 +143,16 @@ class AccountController extends Controller
             return new SuccessResource((object)['message' => 'Successfully sent!']);
         }
         else{
-            return new FailedResource((object)['message' => 'This user already attached to  account']);
+            return new FailedResource((object)['error' => 'This user already attached to  account']);
         }
-
-
     }
+    /**
+     * POST /api/account/account_confirmation/{token}/{id}
+     * Confirmation of Invitation
+     *
+     * @param $token $id
+     * @return FailedResource|SuccessResource
+     */
     public function confirm($token,$id)
     {
         $account = Account::where('id', $id)->first();
@@ -119,7 +164,7 @@ class AccountController extends Controller
                 $difTime = $end->diffInHours($start);
                 if($difTime > 24){
                     $getAccount->update(['confirmed'=>false]);
-                    return new FailedResource((object)['message' => 'Account Token time expired']);
+                    return new FailedResource((object)['error' => 'Account Token time expired']);
                 }else {
                     $getAccount->update(['confirmed'=>true]);
                     return new SuccessResource((object)['message' => 'Your Invitation complete,congratulations']);
@@ -130,7 +175,7 @@ class AccountController extends Controller
             }
         }
         else{
-            return new FailedResource((object)['message' => 'Account not found']);
+            return new FailedResource((object)['error' => 'Account not found']);
         }
     }
 }

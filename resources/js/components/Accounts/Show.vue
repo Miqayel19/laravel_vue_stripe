@@ -1,6 +1,5 @@
 <template>
     <div  v-if="account">
-
             <table class="table">
                 <tr>
                     <th>ID</th>

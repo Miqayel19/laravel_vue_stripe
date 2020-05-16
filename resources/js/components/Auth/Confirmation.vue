@@ -26,11 +26,10 @@
 
     export default {
         name: "Confirmation",
-
         beforeMount() {
             let token = this.$route.params.token;
             axios.post(`/api/auth/confirmation/${token}`).then(res => {
-                this.message  = res.data.data.message;
+                this.message  = res.data.data.error;
                 if(res.data.data.code === 200){
                     this.status = true;
                 } else if(res.data.data.code === 400){
@@ -47,21 +46,13 @@
         methods: {
             generate:function(e) {
                 e.preventDefault();
-
                 axios.post('/api/auth/generate',{'token' : this.$route.params.token}).then(res => {
-                    this.message  = res.data.data.message;
+                    this.message  = res.data.data.error;
                     if(res.data.data.code === 200){
                         this.status = true
                     }
                 }).catch(err => {});
-
             },
-
-
         }
     }
 </script>
-
-<style scoped>
-
-</style>

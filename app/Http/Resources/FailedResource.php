@@ -16,7 +16,7 @@ class FailedResource extends JsonResource
     {
         return [
             'code' => 400,
-            'message' => $this->message
+            'error' => $this->message
         ];
     }
 }
