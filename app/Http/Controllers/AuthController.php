@@ -104,6 +104,7 @@ class AuthController extends Controller
      * POST /api/auth/confirmation/{token}
      * Confirm user Authentication Token
      *
+     * @param UserService $userService
      * @param  $token
      * @return FailedResource|SuccessResource
      */
@@ -134,6 +135,7 @@ class AuthController extends Controller
      * POST /api/auth/generate
      * Generate new  user Authentication Token
      *
+     * @param UserService $userService
      * @param  Request $request
      * @return SuccessResource
      */

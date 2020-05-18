@@ -26,6 +26,7 @@ class AccountController extends Controller
     /**
      * Get Authenticated user accounts.
      *
+     * @param AccountService $accountService
      * @return AccountResource
      */
     public function index(AccountService $accountService)
@@ -37,6 +38,7 @@ class AccountController extends Controller
      * GET /api/account/{id}
      * Get single account with id
      *
+     * @param AccountService $accountService
      * @param $id
      * @return FailedResource|AccountResource
      */
@@ -52,6 +54,7 @@ class AccountController extends Controller
      * POST /api/account/new
      * Create Account
      *
+     * @param AccountService $accountService
      * @param AccountRequest $request
      * @return FailedResource|AccountResource
      */
@@ -78,7 +81,9 @@ class AccountController extends Controller
      * PUT /api/account/{id}
      * Update account
      *
-     * @param AccountRequest $request  $id
+     * @param AccountService $accountService
+     * @param AccountRequest $request
+     * @param $id
      * @return FailedResource|AccountResource
      */
     public function update(AccountService $accountService,AccountRequest $request,$id)
@@ -103,6 +108,7 @@ class AccountController extends Controller
      * DELETE /api/account/{id}
      * Delete account
      *
+     * @param AccountService $accountService
      * @param   $id
      * @return FailedResource|AccountResource
      */
@@ -150,7 +156,8 @@ class AccountController extends Controller
      * POST /api/account/account_confirmation/{token}/{id}
      * Confirmation of Invitation
      *
-     * @param $token $id
+     * @param $token
+     * @param $id
      * @return FailedResource|SuccessResource
      */
     public function confirm($token,$id)
