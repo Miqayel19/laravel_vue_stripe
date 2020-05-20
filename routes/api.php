@@ -33,4 +33,10 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::delete('/account/{id}', 'AccountController@destroy');
     Route::post('/account/sendInvitation', 'AccountController@invite');
     Route::post('/account/account_confirmation/{token}/{id}', 'AccountController@confirm');
+
+    Route::get('/plan', 'PlanController@index');
+    Route::get('/plan/{id}', 'PlanController@show');
+    Route::post('/plan/new/', 'PlanController@store');
+    Route::put('/plan/{id}', 'PlanController@update');
+    Route::delete('/plan/{id}', 'PlanController@destroy');
 });

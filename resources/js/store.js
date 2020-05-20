@@ -8,7 +8,8 @@ export default {
         auth_error:null,
         registeredUser: null,
         reg_error:null,
-        accounts:[]
+        accounts:[],
+        plans:[]
     },
     getters:{
         welcome(state){
@@ -31,6 +32,9 @@ export default {
         },
         accounts(state){
             return state.accounts
+        },
+        plans(state){
+            return state.plans
         },
 
     },
@@ -60,6 +64,9 @@ export default {
         },
         updateAccounts(state,payload){
             state.accounts = payload
+        },
+        updatePlans(state,payload){
+            state.plans = payload
         }
     },
     actions:{
@@ -74,6 +81,16 @@ export default {
             })
                 .then((response) => {
                     context.commit('updateAccounts', response.data.data);
+                })
+        },
+        getPlans(context){
+            axios.get('/api/plan',{
+                headers:{
+                    'Authorization':`Bearer ${context.state.currentUser.token}`
+                }
+            })
+                .then((response) => {
+                    context.commit('updatePlans', response.data.data);
                 })
         }
     }

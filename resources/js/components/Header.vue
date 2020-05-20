@@ -19,6 +19,12 @@
                         <li>
                             <router-link to="/account" class="nav-link"> My accounts</router-link>
                         </li>
+                        <li>
+                            <router-link to="/plans" class="nav-link"> Plans</router-link>
+                        </li>
+                        <li>
+                            <router-link to="/cartItems" class="nav-link"> Cart Items</router-link>
+                        </li>
                         <li class="nav-item dropdown">
                             <a id="navdrop" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false" aria-haspopup="true">
                                 {{ currentUser.name }}

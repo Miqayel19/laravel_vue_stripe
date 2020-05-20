@@ -8,7 +8,11 @@ import AccountList from './components/Accounts/List.vue';
 import AccountNew from './components/Accounts/New.vue';
 import Account from './components/Accounts/Show.vue';
 import AccountEdit from './components/Accounts/Edit.vue';
-
+import PlanMain from './components/Plans/Main.vue';
+import PlanList from './components/Plans/List.vue';
+import PlanNew from './components/Plans/New.vue';
+import Plan from './components/Plans/Show.vue';
+import PlanEdit from './components/Plans/Edit.vue';
 
 
 
@@ -57,4 +61,26 @@ export const routes = [
 
         ]
     },
+    {
+        path: '/plan',
+        component: PlanMain,
+        children:[
+            {
+                path:'/',
+                component:PlanList
+            },
+            {
+                path:'new',
+                component:PlanNew
+            },
+            {
+                path:':id',
+                component:Plan
+            },
+            {
+                path:':id/edit',
+                component:PlanEdit
+            },
+        ]
+    }
 ]
