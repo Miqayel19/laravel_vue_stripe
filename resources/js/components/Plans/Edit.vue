@@ -1,5 +1,5 @@
 <template>
-    <div class="account-view" v-if="account">
+    <div class="plan-view">
         <form @submit.prevent="updateForm">
             <div v-if="errors.length" class="alert alert-danger" >
                 <b>Please fix following errors</b>
@@ -11,25 +11,13 @@
                 <tr>
                     <th>Name</th>
                     <td>
-                        <input type="text"  class="form-control" v-model="account.name">
+                        <input type="text"  class="form-control" v-model="plan.name">
                     </td>
                 </tr>
                 <tr>
-                    <th>Phone</th>
+                    <th>Price</th>
                     <td>
-                        <input type="text" class="form-control" v-model="account.phone">
-                    </td>
-                </tr>
-                <tr>
-                    <th>Address</th>
-                    <td>
-                        <input type="text" class="form-control" v-model="account.address">
-                    </td>
-                </tr>
-                <tr>
-                    <th>Country</th>
-                    <td>
-                        <input type="text" class="form-control" v-model="account.country">
+                        <input type="number" class="form-control" v-model="plan.price">
                     </td>
                 </tr>
                 <tr>
@@ -46,62 +34,47 @@
 <script>
     export default {
         name: 'edit',
-        created() {
-            axios.get(`/api/account/${this.$route.params.id}`,{
+        mounted() {
+            axios.get(`/api/plan/${this.$route.params.id}`,{
                 headers:{
                     "Authorization":`Bearer ${this.currentUser.token}`
                 }
             })
                 .then((response) => {
-                    this.account = response.data.account
+                    this.plan = response.data.data
                 });
-
         },
         computed: {
             currentUser() {
                 return this.$store.getters.currentUser;
             },
-            accounts() {
-                return this.$store.getters.accounts;
-            }
         },
         data() {
             return {
-                account: {
+                plan: {
                     name:'',
-                    phone:'',
-                    address:'',
-                    country:'',
+                    price:'',
                 },
                 errors: []
             };
         },
         methods:{
-
             updateForm: function (e) {
 
-                if (!this.account.name) {
+                if (!this.plan.name) {
                     this.errors.push ("Name required")
+                }else if(this.plan.name.length < 3){
+                    this.errors.push("Name must contains minimum 3 characters")
                 }
-                if (!this.account.phone) {
-                    this.errors.push("Phone required")
-                }
-                if (!this.account.country) {
-                    this.errors.push("Country required")
-                }
-                if (!this.account.address) {
-                    this.errors.push("Address required")
-                }
-
                 if (!this.errors.length) {
-                    axios.put(`/api/account/${this.$route.params.id}`, this.$data.account,{
+                    axios.put(`/api/plan/${this.$route.params.id}`, this.$data.plan,{
                         headers:{
                             'Authorization':`Bearer ${this.currentUser.token}`
                         }
                     })
                     .then((response) => {
-                        this.$store.commit('updateAccounts',response.data.data);
-                        this.$router.push('/account');
+                        this.$store.commit('updatePlans',response.data.data);
+                        this.$router.push('/plan');
                     });
                 }
                 e.preventDefault();

@@ -20,35 +20,13 @@
                     </td>
                 </tr>
                 <tr>
-                    <th>Address</th>
+                    <th>Price</th>
                     <td>
-                        <input type="text" class="form-control" v-model="plan.address" placeholder="Address"/>
+                        <input type="number" class="form-control" v-model="plan.price" placeholder="Price"/>
                     </td>
                     <td>
-                         <span v-if="errors.address">
-                            {{ errors.description }}
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Country</th>
-                    <td>
-                        <input type="text" class="form-control" v-model="plan.country" placeholder="Country"/>
-                    </td>
-                    <td>
-                         <span v-if="errors.country">
+                         <span v-if="errors.price">
                             {{ errors.country }}
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Phone</th>
-                    <td>
-                        <input type="text" class="form-control" v-model="plan.phone" placeholder="Phone"/>
-                    </td>
-                    <td>
-                         <span v-if="errors.phone">
-                            {{ errors.phone }}
                         </span>
                     </td>
                 </tr>
@@ -78,7 +56,6 @@
                 plan: {
                     name:'',
                     price: '',
-                    userID: '',
                 },
                 errors: [],
             };
@@ -93,18 +70,8 @@
                 }else if(this.plan.name.length < 3){
                     this.errors.push("Name must contains minimum 3 characters")
                 }
-                if (!this.plan.address) {
-                    this.errors.push("Address required")
-                }else if(this.plan.address.length < 4){
-                    this.errors.push("Address must contains minimum 4 characters")
-                }
-                if (!this.plan.country) {
-                    this.errors.push("Country required")
-                }else if(this.plan.country.length < 4){
-                    this.errors.push("Country must contains minimum 3 characters")
-                }
-                if (!this.plan.phone) {
-                    this.errors.push("Phone required")
+                if (!this.plan.price) {
+                    this.errors.push("Price required")
                 }
                 if (!this.errors.length) {
                     axios.post('/api/plan/new', this.$data.plan,{
@@ -113,11 +80,9 @@
                         }
                     })
                     .then((response) => {
-                        this.$store.commit('updateplans',response.data.plans);
+                        this.$store.commit('updatePlans',response.data.data);
                         this.$router.push('/plan');
                     });
-                }else {
-                    console.log()
                 }
                 e.preventDefault();
             },

@@ -8,10 +8,7 @@ class Plan extends Model
 {
     public $timestamps = false;
     protected $fillable = [
-        'name', 'price', 'userID'
+        'name', 'price'
     ];
-    public function users()
-    {
-        return $this->belongsTo('App\User','userID');
-    }
+
 }

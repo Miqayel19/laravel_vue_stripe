@@ -10,6 +10,7 @@
                     <th>ID</th>
                     <th>Name</th>
                     <th>Price</th>
+                    <th>Subscribe</th>
                     <th colspan="3">Actions</th>
                 </thead>
             </template>
@@ -24,6 +25,9 @@
                         <td>{{ plan.id}}</td>
                         <td>{{ plan.name }}</td>
                         <td>{{ plan.price }}</td>
+                        <td>
+                            <input type="submit" value="Add to Cart"  @click="addToCart(plan.id)" class="btn btn-success"/>
+                        </td>
                         <td>
                             <router-link :to="`/plan/${plan.id}`">Show</router-link>
                         </td>
@@ -58,7 +62,7 @@
             }
         },
         methods:{
-            deletePlan(index,id){
+            deletePlan(id,index){
                 axios.delete(`/api/plan/${id}`,{
                     headers:{
                         "Authorization":`Bearer ${this.currentUser.token}`,
@@ -71,6 +75,17 @@
                     this.$store.commit('updatePlans', res.data.data);
                 })
                 .catch(err => { console.error(err) })
+            },
+            addToCart(id){
+                axios.post(`/api/plan/addToCart/${id}`,{},{
+                    headers:{
+                        "Authorization":`Bearer ${this.currentUser.token}`,
+                    }
+                })
+                .then(res => {
+                    console.log(res.data)
+                    // this.$store.commit('updatePlans', res.data.data);
+                })
             }
         }
     }

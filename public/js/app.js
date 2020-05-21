@@ -2945,46 +2945,29 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'edit',
-  created: function created() {
+  mounted: function mounted() {
     var _this = this;
 
-    axios.get("/api/account/".concat(this.$route.params.id), {
+    axios.get("/api/plan/".concat(this.$route.params.id), {
       headers: {
         "Authorization": "Bearer ".concat(this.currentUser.token)
       }
     }).then(function (response) {
-      _this.account = response.data.account;
+      _this.plan = response.data.data;
     });
   },
   computed: {
     currentUser: function currentUser() {
       return this.$store.getters.currentUser;
-    },
-    accounts: function accounts() {
-      return this.$store.getters.accounts;
     }
   },
   data: function data() {
     return {
-      account: {
+      plan: {
         name: '',
-        phone: '',
-        address: '',
-        country: ''
+        price: ''
       },
       errors: []
     };
@@ -2993,31 +2976,21 @@ __webpack_require__.r(__webpack_exports__);
     updateForm: function updateForm(e) {
       var _this2 = this;
 
-      if (!this.account.name) {
+      if (!this.plan.name) {
         this.errors.push("Name required");
-      }
-
-      if (!this.account.phone) {
-        this.errors.push("Phone required");
-      }
-
-      if (!this.account.country) {
-        this.errors.push("Country required");
-      }
-
-      if (!this.account.address) {
-        this.errors.push("Address required");
+      } else if (this.plan.name.length < 3) {
+        this.errors.push("Name must contains minimum 3 characters");
       }
 
       if (!this.errors.length) {
-        axios.put("/api/account/".concat(this.$route.params.id), this.$data.account, {
+        axios.put("/api/plan/".concat(this.$route.params.id), this.$data.plan, {
           headers: {
             'Authorization': "Bearer ".concat(this.currentUser.token)
           }
         }).then(function (response) {
-          _this2.$store.commit('updateAccounts', response.data.data);
+          _this2.$store.commit('updatePlans', response.data.data);
 
-          _this2.$router.push('/account');
+          _this2.$router.push('/plan');
         });
       }
 
@@ -3079,6 +3052,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'list',
   mounted: function mounted() {
@@ -3097,7 +3074,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    deletePlan: function deletePlan(index, id) {
+    deletePlan: function deletePlan(id, index) {
       var _this = this;
 
       axios["delete"]("/api/plan/".concat(id), {
@@ -3112,6 +3089,15 @@ __webpack_require__.r(__webpack_exports__);
         _this.$store.commit('updatePlans', res.data.data);
       })["catch"](function (err) {
         console.error(err);
+      });
+    },
+    addToCart: function addToCart(id) {
+      axios.post("/api/plan/addToCart/".concat(id), {}, {
+        headers: {
+          "Authorization": "Bearer ".concat(this.currentUser.token)
+        }
+      }).then(function (res) {
+        console.log(res.data); // this.$store.commit('updatePlans', res.data.data);
       });
     }
   }
@@ -3203,28 +3189,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'new',
   computed: {
@@ -3236,8 +3200,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       plan: {
         name: '',
-        price: '',
-        userID: ''
+        price: ''
       },
       errors: []
     };
@@ -3254,20 +3217,8 @@ __webpack_require__.r(__webpack_exports__);
         this.errors.push("Name must contains minimum 3 characters");
       }
 
-      if (!this.plan.address) {
-        this.errors.push("Address required");
-      } else if (this.plan.address.length < 4) {
-        this.errors.push("Address must contains minimum 4 characters");
-      }
-
-      if (!this.plan.country) {
-        this.errors.push("Country required");
-      } else if (this.plan.country.length < 4) {
-        this.errors.push("Country must contains minimum 3 characters");
-      }
-
-      if (!this.plan.phone) {
-        this.errors.push("Phone required");
+      if (!this.plan.price) {
+        this.errors.push("Price required");
       }
 
       if (!this.errors.length) {
@@ -3276,12 +3227,10 @@ __webpack_require__.r(__webpack_exports__);
             'Authorization': "Bearer ".concat(this.currentUser.token)
           }
         }).then(function (response) {
-          _this.$store.commit('updateplans', response.data.plans);
+          _this.$store.commit('updatePlans', response.data.data);
 
           _this.$router.push('/plan');
         });
-      } else {
-        console.log();
       }
 
       e.preventDefault();
@@ -3326,44 +3275,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'show',
   mounted: function mounted() {
     var _this = this;
 
-    axios.get("/api/account/".concat(this.$route.params.id), {
+    axios.get("/api/plan/".concat(this.$route.params.id), {
       headers: {
         "Authorization": "Bearer ".concat(this.currentUser.token)
       }
     }).then(function (response) {
-      _this.account = response.data.data;
+      _this.plan = response.data.data;
     });
   },
   computed: {
@@ -3373,44 +3295,37 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      account: [],
-      member_email: '',
-      errors: [],
-      invitation: false
+      plan: [],
+      errors: []
     };
-  },
-  methods: {
-    sendInvitation: function sendInvitation(e) {
-      var _this2 = this;
+  } // methods:{
+  //     sendInvitation: function(e){
+  //         this.errors = [];
+  //         if (!this.member_email) {
+  //             this.errors.push('Member Email required.');
+  //         } else if (!this.validEmail(this.member_email)) {
+  //             this.errors.push('Please provide valid email address.');
+  //         }
+  //         if (!this.errors.length) {
+  //             axios.post(`/api/plan/sendInvitation`,{'member_email':this.member_email,'acc_id':this.plan.id},{
+  //                 headers:{
+  //                     'Authorization':`Bearer ${this.currentUser.token}`
+  //                 },
+  //
+  //             })
+  //             .then((response) => {
+  //                 this.invitation = true
+  //             });
+  //         }
+  //
+  //         e.preventDefault();
+  //     },
+  //     validEmail: function (email) {
+  //         var reg = /[^@]+@[^\.]+\..+/g;
+  //         return reg.test(email);
+  //     }
+  // },
 
-      this.errors = [];
-
-      if (!this.member_email) {
-        this.errors.push('Member Email required.');
-      } else if (!this.validEmail(this.member_email)) {
-        this.errors.push('Please provide valid email address.');
-      }
-
-      if (!this.errors.length) {
-        axios.post("/api/account/sendInvitation", {
-          'member_email': this.member_email,
-          'acc_id': this.account.id
-        }, {
-          headers: {
-            'Authorization': "Bearer ".concat(this.currentUser.token)
-          }
-        }).then(function (response) {
-          _this2.invitation = true;
-        });
-      }
-
-      e.preventDefault();
-    },
-    validEmail: function validEmail(email) {
-      var reg = /[^@]+@[^\.]+\..+/g;
-      return reg.test(email);
-    }
-  }
 });
 
 /***/ }),
@@ -3560,7 +3475,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.account-view[data-v-74887966] {\n    display: flex;\n    align-items: center;\n}\n\n", ""]);
+exports.push([module.i, "\n.plan-view[data-v-74887966] {\n    display: flex;\n    align-items: center;\n}\n\n", ""]);
 
 // exports
 
@@ -23275,7 +23190,7 @@ var render = function() {
                               "router-link",
                               {
                                 staticClass: "nav-link",
-                                attrs: { to: "/plans" }
+                                attrs: { to: "/plan" }
                               },
                               [_vm._v(" Plans")]
                             )
@@ -23473,154 +23388,96 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm.account
-    ? _c("div", { staticClass: "account-view" }, [
-        _c(
-          "form",
-          {
-            on: {
-              submit: function($event) {
-                $event.preventDefault()
-                return _vm.updateForm($event)
-              }
-            }
-          },
-          [
-            _vm.errors.length
-              ? _c("div", { staticClass: "alert alert-danger" }, [
-                  _c("b", [_vm._v("Please fix following errors")]),
-                  _vm._v(" "),
-                  _c("ul", [
-                    _c(
-                      "strong",
-                      _vm._l(_vm.errors, function(error, index) {
-                        return _c("li", { key: index }, [_vm._v(_vm._s(error))])
-                      }),
-                      0
-                    )
-                  ])
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _c("table", { staticClass: "table table-bordered" }, [
-              _c("tr", [
-                _c("th", [_vm._v("Name")]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.account.name,
-                        expression: "account.name"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    attrs: { type: "text" },
-                    domProps: { value: _vm.account.name },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.$set(_vm.account, "name", $event.target.value)
-                      }
-                    }
-                  })
-                ])
-              ]),
+  return _c("div", { staticClass: "plan-view" }, [
+    _c(
+      "form",
+      {
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+            return _vm.updateForm($event)
+          }
+        }
+      },
+      [
+        _vm.errors.length
+          ? _c("div", { staticClass: "alert alert-danger" }, [
+              _c("b", [_vm._v("Please fix following errors")]),
               _vm._v(" "),
-              _c("tr", [
-                _c("th", [_vm._v("Phone")]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.account.phone,
-                        expression: "account.phone"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    attrs: { type: "text" },
-                    domProps: { value: _vm.account.phone },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.$set(_vm.account, "phone", $event.target.value)
-                      }
-                    }
-                  })
-                ])
-              ]),
-              _vm._v(" "),
-              _c("tr", [
-                _c("th", [_vm._v("Address")]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.account.address,
-                        expression: "account.address"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    attrs: { type: "text" },
-                    domProps: { value: _vm.account.address },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.$set(_vm.account, "address", $event.target.value)
-                      }
-                    }
-                  })
-                ])
-              ]),
-              _vm._v(" "),
-              _c("tr", [
-                _c("th", [_vm._v("Country")]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.account.country,
-                        expression: "account.country"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    attrs: { type: "text" },
-                    domProps: { value: _vm.account.country },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.$set(_vm.account, "country", $event.target.value)
-                      }
-                    }
-                  })
-                ])
-              ]),
-              _vm._v(" "),
-              _vm._m(0)
+              _c("ul", [
+                _c(
+                  "strong",
+                  _vm._l(_vm.errors, function(error, index) {
+                    return _c("li", { key: index }, [_vm._v(_vm._s(error))])
+                  }),
+                  0
+                )
+              ])
             ])
-          ]
-        )
-      ])
-    : _vm._e()
+          : _vm._e(),
+        _vm._v(" "),
+        _c("table", { staticClass: "table table-bordered" }, [
+          _c("tr", [
+            _c("th", [_vm._v("Name")]),
+            _vm._v(" "),
+            _c("td", [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.plan.name,
+                    expression: "plan.name"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "text" },
+                domProps: { value: _vm.plan.name },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.plan, "name", $event.target.value)
+                  }
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("th", [_vm._v("Price")]),
+            _vm._v(" "),
+            _c("td", [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.plan.price,
+                    expression: "plan.price"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "number" },
+                domProps: { value: _vm.plan.price },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.plan, "price", $event.target.value)
+                  }
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _vm._m(0)
+        ])
+      ]
+    )
+  ])
 }
 var staticRenderFns = [
   function() {
@@ -23693,6 +23550,18 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(plan.price))]),
                     _vm._v(" "),
+                    _c("td", [
+                      _c("input", {
+                        staticClass: "btn btn-success",
+                        attrs: { type: "submit", value: "Add to Cart" },
+                        on: {
+                          click: function($event) {
+                            return _vm.addToCart(plan.id)
+                          }
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
                     _c(
                       "td",
                       [
@@ -23749,6 +23618,8 @@ var staticRenderFns = [
       _c("th", [_vm._v("Name")]),
       _vm._v(" "),
       _c("th", [_vm._v("Price")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Subscribe")]),
       _vm._v(" "),
       _c("th", { attrs: { colspan: "3" } }, [_vm._v("Actions")])
     ])
@@ -23889,7 +23760,7 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("th", [_vm._v("Address")]),
+            _c("th", [_vm._v("Price")]),
             _vm._v(" "),
             _c("td", [
               _c("input", {
@@ -23897,110 +23768,30 @@ var render = function() {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.plan.address,
-                    expression: "plan.address"
+                    value: _vm.plan.price,
+                    expression: "plan.price"
                   }
                 ],
                 staticClass: "form-control",
-                attrs: { type: "text", placeholder: "Address" },
-                domProps: { value: _vm.plan.address },
+                attrs: { type: "number", placeholder: "Price" },
+                domProps: { value: _vm.plan.price },
                 on: {
                   input: function($event) {
                     if ($event.target.composing) {
                       return
                     }
-                    _vm.$set(_vm.plan, "address", $event.target.value)
+                    _vm.$set(_vm.plan, "price", $event.target.value)
                   }
                 }
               })
             ]),
             _vm._v(" "),
             _c("td", [
-              _vm.errors.address
-                ? _c("span", [
-                    _vm._v(
-                      "\n                        " +
-                        _vm._s(_vm.errors.description) +
-                        "\n                    "
-                    )
-                  ])
-                : _vm._e()
-            ])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("th", [_vm._v("Country")]),
-            _vm._v(" "),
-            _c("td", [
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.plan.country,
-                    expression: "plan.country"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: { type: "text", placeholder: "Country" },
-                domProps: { value: _vm.plan.country },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.$set(_vm.plan, "country", $event.target.value)
-                  }
-                }
-              })
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _vm.errors.country
+              _vm.errors.price
                 ? _c("span", [
                     _vm._v(
                       "\n                        " +
                         _vm._s(_vm.errors.country) +
-                        "\n                    "
-                    )
-                  ])
-                : _vm._e()
-            ])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("th", [_vm._v("Phone")]),
-            _vm._v(" "),
-            _c("td", [
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.plan.phone,
-                    expression: "plan.phone"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: { type: "text", placeholder: "Phone" },
-                domProps: { value: _vm.plan.phone },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.$set(_vm.plan, "phone", $event.target.value)
-                  }
-                }
-              })
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _vm.errors.phone
-                ? _c("span", [
-                    _vm._v(
-                      "\n                        " +
-                        _vm._s(_vm.errors.phone) +
                         "\n                    "
                     )
                   ])
@@ -24062,7 +23853,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm.account
+  return _vm.plan
     ? _c(
         "div",
         [
@@ -24070,54 +23861,24 @@ var render = function() {
             _c("tr", [
               _c("th", [_vm._v("ID")]),
               _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(_vm.account.id))])
+              _c("td", [_vm._v(_vm._s(_vm.plan.id))])
             ]),
             _vm._v(" "),
             _c("tr", [
               _c("th", [_vm._v("Name")]),
               _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(_vm.account.name))])
+              _c("td", [_vm._v(_vm._s(_vm.plan.name))])
             ]),
             _vm._v(" "),
             _c("tr", [
-              _c("th", [_vm._v("Phone")]),
+              _c("th", [_vm._v("Price")]),
               _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(_vm.account.phone))])
-            ]),
-            _vm._v(" "),
-            _c("tr", [
-              _c("th", [_vm._v("Address")]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(_vm.account.address))])
-            ]),
-            _vm._v(" "),
-            _c("tr", [
-              _c("th", [_vm._v("Country")]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(_vm.account.country))])
-            ]),
-            _vm._v(" "),
-            _c("tr", [
-              _c("th", [_vm._v("Status")]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(_vm.account.status))])
-            ]),
-            _vm._v(" "),
-            _c("tr", [
-              _c("th", [_vm._v("Stripe Customer")]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(_vm.account.stripe_customer_id))])
-            ]),
-            _vm._v(" "),
-            _c("tr", [
-              _c("th", [_vm._v("Currency")]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(_vm.account.currency))])
+              _c("td", [_vm._v(_vm._s(_vm.plan.price))])
             ])
           ]),
           _vm._v(" "),
-          _c("router-link", { attrs: { to: "/account" } }, [
-            _vm._v("Back to all accounts")
+          _c("router-link", { attrs: { to: "/plan" } }, [
+            _vm._v("Back to all plans")
           ]),
           _vm._v(" "),
           _vm.errors.length
@@ -24134,54 +23895,7 @@ var render = function() {
                   )
                 ])
               ])
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.invitation
-            ? _c("div", { staticClass: "alert alert-success" }, [
-                _c("b", [
-                  _vm._v("Please check your Email to confirm Invitation")
-                ])
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _c(
-            "form",
-            {
-              on: {
-                submit: function($event) {
-                  $event.preventDefault()
-                  return _vm.sendInvitation($event)
-                }
-              }
-            },
-            [
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.member_email,
-                    expression: "member_email"
-                  }
-                ],
-                attrs: { type: "email", placeholder: "Member email" },
-                domProps: { value: _vm.member_email },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.member_email = $event.target.value
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _c("input", {
-                staticClass: "btn btn-primary",
-                attrs: { type: "submit", value: "Send Invitation Link" }
-              })
-            ]
-          )
+            : _vm._e()
         ],
         1
       )

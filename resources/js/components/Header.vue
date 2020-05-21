@@ -20,7 +20,7 @@
                             <router-link to="/account" class="nav-link"> My accounts</router-link>
                         </li>
                         <li>
-                            <router-link to="/plans" class="nav-link"> Plans</router-link>
+                            <router-link to="/plan" class="nav-link"> Plans</router-link>
                         </li>
                         <li>
                             <router-link to="/cartItems" class="nav-link"> Cart Items</router-link>

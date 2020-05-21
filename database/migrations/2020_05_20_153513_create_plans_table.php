@@ -17,10 +17,6 @@ class CreatePlansTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->integer('price');
-            $table->integer('userID')->unsigned();
-        });
-        Schema::table('plans', function($table) {
-            $table->foreign('userID')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

@@ -39,4 +39,9 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::post('/plan/new/', 'PlanController@store');
     Route::put('/plan/{id}', 'PlanController@update');
     Route::delete('/plan/{id}', 'PlanController@destroy');
+
+    Route::post('/plan/addToCart/{id}', 'CartItemController@store');
+    Route::get('/plan/cartItem/', 'CartItemController@index');
+    Route::delete('/plan/cartItem/{id}', 'CartItemController@destroy');
+
 });
