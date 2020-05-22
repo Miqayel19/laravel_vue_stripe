@@ -14,11 +14,11 @@ class CartItemService implements CartItemInterface
     }
     public function index()
     {
-        return CartItem::all();
+        return $this->cartItem->with('plan')->get();
     }
-    public function show($id)
+    public function delete($id)
     {
-        return  CartItem::where('id',$id)->first();
+        return  $this->cartItem::where('id',$id)->delete();
     }
     public function create($credentials)
     {

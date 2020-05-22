@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FailedResource extends JsonResource
+class PriceResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,11 +14,11 @@ class FailedResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'code' => 400,
-            'error' => $this->error
-        ];
+       return [
+           'code' => 200,
+           'data' => $this->data,
+           'message' =>$this->message,
+           'total' =>$this->total
+       ];
     }
-
-
 }

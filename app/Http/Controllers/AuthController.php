@@ -60,7 +60,9 @@ class AuthController extends Controller
         if (!$token = auth('api')->attempt($credentials)) {
             return new FailedResource((object)['error' => 'Unauthorized']);
         }
-        return $this->respondWithToken($token);
+        else {
+            return $this->respondWithToken($token);
+        }
     }
 
     /**
@@ -93,6 +95,7 @@ class AuthController extends Controller
     protected function respondWithToken($token)
     {
         return response()->json([
+            'code' => 200,
             'token' => $token,
             'user' => $this->guard()->user(),
             'token_type' => 'bearer',

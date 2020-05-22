@@ -13,7 +13,8 @@ import PlanList from './components/Plans/List.vue';
 import PlanNew from './components/Plans/New.vue';
 import Plan from './components/Plans/Show.vue';
 import PlanEdit from './components/Plans/Edit.vue';
-
+import CartItemMain from './components/CartItems/Main.vue';
+import CartItemList from './components/CartItems/List.vue';
 
 
 
@@ -54,12 +55,13 @@ export const routes = [
                 path:':id/edit',
                 component:AccountEdit
             },
-            {
-                path: 'account_confirmation/:token/:id',
-                component: AccountConfirm,
-            },
+
 
         ]
+    },
+    {
+        path: '/account_confirmation/:token/:id',
+        component: AccountConfirm,
     },
     {
         path: '/plan',
@@ -80,6 +82,16 @@ export const routes = [
             {
                 path:':id/edit',
                 component:PlanEdit
+            },
+        ]
+    },
+    {
+        path: '/cartItems',
+        component: CartItemMain,
+        children:[
+            {
+                path:'/',
+                component:CartItemList
             },
         ]
     }

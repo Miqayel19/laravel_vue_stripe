@@ -31,6 +31,7 @@
                 }
             }).then(res => {
                 if(res.data.data.code === 200){
+                    this.$store.commit("logout");
                     this.message  = res.data.data.message;
                     this.status = true;
                 } else if(res.data.data.code === 400){

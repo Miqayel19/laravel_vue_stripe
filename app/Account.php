@@ -12,7 +12,7 @@ class Account extends Model
     ];
     public function users()
     {
-        return $this->belongsToMany('App\User','account_users')->withPivot([
+        return $this->belongsToMany('App\User','account_users','account_id','user_id')->withPivot([
             'role',
             'confirmed',
             'account_token',

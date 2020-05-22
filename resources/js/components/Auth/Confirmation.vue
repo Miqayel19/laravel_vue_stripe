@@ -29,7 +29,7 @@
         beforeMount() {
             let token = this.$route.params.token;
             axios.post(`/api/auth/confirmation/${token}`).then(res => {
-                this.message  = res.data.data.error;
+                this.message  = res.data.data.message;
                 if(res.data.data.code === 200){
                     this.status = true;
                 } else if(res.data.data.code === 400){

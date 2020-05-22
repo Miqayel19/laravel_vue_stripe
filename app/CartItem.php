@@ -10,4 +10,10 @@ class CartItem extends Model
     protected $fillable = [
         'userID', 'planID'
     ];
+    public function plan(){
+        return $this->belongsTo('App\Plan','planID');
+    }
+    public function user(){
+        return $this->belongsTo('App\User','userID');
+    }
 }

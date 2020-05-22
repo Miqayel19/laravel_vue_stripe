@@ -19,6 +19,18 @@ class AppServiceProvider extends ServiceProvider
             'App\Http\Contracts\UserInterface',
             'App\Http\Services\UserService'
         );
+        $this->app->bind(
+            'App\Http\Contracts\AccountInterface',
+            'App\Http\Services\AccountService'
+        );
+        $this->app->bind(
+            'App\Http\Contracts\PlanInterface',
+            'App\Http\Services\PlanService'
+        );
+        $this->app->bind(
+            'App\Http\Contracts\CartItemInterface',
+            'App\Http\Services\CartItemService'
+        );
     }
 
     /**

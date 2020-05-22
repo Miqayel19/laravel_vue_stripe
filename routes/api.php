@@ -32,6 +32,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::put('/account/{id}', 'AccountController@update');
     Route::delete('/account/{id}', 'AccountController@destroy');
     Route::post('/account/sendInvitation', 'AccountController@invite');
+
     Route::post('/account/account_confirmation/{token}/{id}', 'AccountController@confirm');
 
     Route::get('/plan', 'PlanController@index');
@@ -40,8 +41,8 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::put('/plan/{id}', 'PlanController@update');
     Route::delete('/plan/{id}', 'PlanController@destroy');
 
-    Route::post('/plan/addToCart/{id}', 'CartItemController@store');
-    Route::get('/plan/cartItem/', 'CartItemController@index');
-    Route::delete('/plan/cartItem/{id}', 'CartItemController@destroy');
+    Route::post('/cartItem/new/{id}', 'CartItemController@store');
+    Route::get('/cartItems/', 'CartItemController@index');
+    Route::delete('/cartItem/{id}', 'CartItemController@destroy');
 
 });

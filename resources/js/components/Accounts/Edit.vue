@@ -53,7 +53,7 @@
                 }
             })
                 .then((response) => {
-                    this.account = response.data.account
+                    this.account = response.data.data
                 });
 
         },

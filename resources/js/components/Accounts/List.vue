@@ -33,7 +33,7 @@
                             <router-link :to="`/account/${account.id}/edit`">Edit</router-link>
                         </td>
                         <td>
-                             <input type="submit" value="Delete"  @click="deleteAccount(account.id,index)" class="btn btn-danger"/>
+                             <input type="submit" value="Delete"  @click="deleteAccount(index,account.id)" class="btn btn-danger"/>
                         </td>
                     </tr>
                 </template>

@@ -17,7 +17,7 @@
 </head>
 <body>
 <div id="app">
-    <a href="http://stripe.loc/account/account_confirmation/{{$info['account_token']}}/{{$info['account_id']}}">Please follow  this link to accept invitation </a>
+    <a href="http://stripe.loc/account_confirmation/{{$info['account_token']}}/{{$info['account_id']}}">Please follow  this link to accept invitation </a>
 </div>
 </body>
 </html>

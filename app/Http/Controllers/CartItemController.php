@@ -2,78 +2,72 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Services\CartItemService;
 use App\Http\Resources\FailedResource;
-use App\Http\Resources\SuccessResource;
 use App\Http\Resources\CartItemResource;
-use Carbon\Carbon;
+use App\Http\Resources\PriceResource;
+use App\Http\Contracts\CartItemInterface;
 
 
 class CartItemController extends Controller
 {
 
     protected $user;
-    public function __construct()
+    protected $cartItemService;
+    public function __construct(CartItemInterface $cartItemService)
     {
         $this->user = auth('api')->user();
+        $this->cartItemService = $cartItemService;
     }
 //    /**
 //     * Get Authenticated user CartItems.
 //     *
-//     * @param CartItemService $CartItemService
 //     * @return CartItemResource
 //     */
-    public function index(CartItemService $cartItemService)
+    public function index()
     {
-        $cartItems = $cartItemService->index();
-        return new CartItemResource((object)['data' => $cartItems,'message' =>'Successfully fetched']);
+        $totalPrice = 0;
+        $cartItems = $this->cartItemService->index();
+        foreach ($cartItems as $item){
+            $totalPrice += $item->plan->price;
+        }
+        return new PriceResource((object)['data' => $cartItems,'message' =>'Successfully fetched','total' => $totalPrice]);
     }
 //    /**
 //     * GET /api/CartItem/{id}
 //     * Get single CartItem with id
 //     *
-//     * @param CartItemService $CartItemService
 //     * @param $id
 //     * @return FailedResource|CartItemResource
 //     */
 
 
-    public function store(CartItemService $cartItemService,$id){
+    public function store($id){
         $credentials = [
             'userID' => $this->user->id,
             'planID' => $id
         ];
-        $cartItem = $cartItemService->create($credentials);
+        $cartItem = $this->cartItemService->create($credentials);
         if($cartItem){
-            $cartItems = $cartItemService->index();
+            $cartItems = $this->cartItemService->index();
             return new CartItemResource((object)['data' => $cartItems,'message' =>'Successfully added']);
         }
-    }
-    public function show(CartItemService $cartItemService,$id)
-    {
-        $cartItem = $cartItemService->show($id);
-        if (!$cartItem) {
-            return new FailedResource((object)['error' => 'Sorry, CartItem with id ' . $id . ' cannot be found']);
-        }
-        return new CartItemResource((object)['data' => $cartItem,'message' =>'Successfully fetched']);
     }
 
 //    /**
 //     * DELETE /api/CartItem/{id}
 //     * Delete CartItem
 //     *
-//     * @param CartItemService $CartItemService
 //     * @param   $id
 //     * @return FailedResource|CartItemResource
 //     */
-    public function destroy(CartItemService $cartItemService,$id)
+    public function destroy($id)
     {
-        $cartItem = $cartItemService->show($id);
+        $cartItem = $this->cartItemService->show($id);
         if(!$cartItem) {
             return new FailedResource((object)['error' => 'Sorry, CartItem with id ' . $id . ' cannot be found']);
         }
-        if ($cartItem->delete()) {
-            $cartItems =  $cartItemService->index();
+        if ($cartItem->delete($id)) {
+            $cartItems =  $this->cartItemService->index();
             return new CartItemResource((object)['message' => 'CartItem  deleted','data' => $cartItems]);
         }
         else {

@@ -7,6 +7,7 @@ use App\Http\Resources\FailedResource;
 use App\Http\Resources\SuccessResource;
 use App\Http\Resources\AccountResource;
 use App\Http\Services\AccountService;
+use App\Http\Contracts\AccountInterface;
 use App\Jobs\SendInvitationEmail;
 use App\User;
 use Carbon\Carbon;
@@ -19,32 +20,32 @@ class AccountController extends Controller
 {
 
     protected $user;
-    public function __construct()
+    protected $accountService;
+    public function __construct(AccountInterface $accountService)
     {
         $this->user = auth('api')->user();
+        $this->accountService = $accountService;
     }
     /**
      * Get Authenticated user accounts.
      *
-     * @param AccountService $accountService
      * @return AccountResource
      */
-    public function index(AccountService $accountService)
+    public function index()
     {
-        $accounts = $accountService->index($this->user->id);
+        $accounts = $this->accountService->index($this->user->id);
         return new AccountResource((object)['data' => $accounts,'message' =>'Successfully fetched']);
     }
     /**
      * GET /api/account/{id}
      * Get single account with id
      *
-     * @param AccountService $accountService
      * @param $id
      * @return FailedResource|AccountResource
      */
-    public function show(AccountService $accountService,$id)
+    public function show($id)
     {
-        $account = $accountService->show($this->user->id,$id);
+        $account = $this->accountService->show($this->user->id,$id);
         if (!$account) {
             return new FailedResource((object)['error' => 'Sorry, account with id ' . $id . ' cannot be found']);
         }
@@ -54,11 +55,10 @@ class AccountController extends Controller
      * POST /api/account/new
      * Create Account
      *
-     * @param AccountService $accountService
      * @param AccountRequest $request
      * @return FailedResource|AccountResource
      */
-    public function store(AccountService $accountService,AccountRequest $request)
+    public function store(AccountRequest $request)
     {
         $credentials = [
             'name' => $request->name,
@@ -67,11 +67,17 @@ class AccountController extends Controller
             'country' => $request->country,
             'status' => "Active"
         ];
-        $account = $accountService->create($credentials);
-        $accountService->attachUser();
+        $account = $this->accountService->create($credentials);
+        $account->users()->attach($this->user->id,
+            array(
+                "role"=>'owner',
+                "confirmed"=>true,
+                'account_token' => Str::random(),
+                'account_token_generated' => date('Y-m-d H:i:s', time()))
+            );
         if ($account) {
-            $accounts = $accountService->index($this->user->id);
-            return new AccountResource((object)['data' => $accounts]);
+            $accounts = $this->accountService->index($this->user->id);
+            return new AccountResource((object)['data' => $accounts,'message' =>'Successfully added']);
         }
         else {
             return new FailedResource((object)['error' => 'Account can not be added']);
@@ -81,12 +87,11 @@ class AccountController extends Controller
      * PUT /api/account/{id}
      * Update account
      *
-     * @param AccountService $accountService
      * @param AccountRequest $request
      * @param $id
      * @return FailedResource|AccountResource
      */
-    public function update(AccountService $accountService,AccountRequest $request,$id)
+    public function update(AccountRequest $request,$id)
     {
         $credentials = [
             'name' => $request->name,
@@ -95,9 +100,9 @@ class AccountController extends Controller
             'country' => $request->country,
             'status' => "Active"
         ];
-        $account = $accountService->update($credentials, $id);
+        $account =$this->accountService->update($credentials, $id);
         if ($account) {
-            $accounts = $accountService->index($this->user->id);
+            $accounts = $this->accountService->index($this->user->id);
             return new AccountResource((object)['message' => 'Account  updated','data' => $accounts]);
         }
         else {
@@ -108,18 +113,23 @@ class AccountController extends Controller
      * DELETE /api/account/{id}
      * Delete account
      *
-     * @param AccountService $accountService
      * @param   $id
      * @return FailedResource|AccountResource
      */
-    public function destroy(AccountService $accountService,$id)
+    public function destroy($id)
     {
-        $account = $accountService->show($this->user->id,$id);
+        $account =$this->accountService->show($this->user->id,$id);
         if(!$account) {
             return new FailedResource((object)['error' => 'Sorry, account with id ' . $id . ' cannot be found']);
         }
-        if ($accountService->detachUser()) {
-            $accounts =  $accountService->index($this->user->id);
+         $account->users()->detach($this->user->id, array(
+             "role"=>'owner',
+             "confirmed"=>true,
+             'account_token' => Str::random(),
+             'account_token_generated' => date('Y-m-d H:i:s', time()))
+         );
+        if ($this->accountService->delete($id)) {
+            $accounts =  $this->accountService->index($this->user->id);
             return new AccountResource((object)['message' => 'Account  deleted','data' => $accounts]);
         }
         else {
@@ -162,6 +172,7 @@ class AccountController extends Controller
      */
     public function confirm($token,$id)
     {
+        auth('api')->logout();
         $account = Account::where('id', $id)->first();
         if($account){
             $getAccount = $account->users()->where('account_token',$token)->first();

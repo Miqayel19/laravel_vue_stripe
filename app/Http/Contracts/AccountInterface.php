@@ -9,6 +9,5 @@ interface AccountInterface{
     public function show($userId,$accountID);
     public function create($credentials);
     public function update($credentials,$id);
-    public function attachUser();
-    public function detachUser();
+    public function delete($id);
 }

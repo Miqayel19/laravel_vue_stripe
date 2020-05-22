@@ -42,7 +42,7 @@
                 </ul>
             </div>
             <div class="alert alert-success"  v-if="invitation" >
-                <b>Please check your Email to confirm Invitation</b>
+                <b>Your invitation has been successfully sent.</b>
             </div>
             <form @submit.prevent="sendInvitation">
                 <input type="email" placeholder="Member email" v-model="member_email"/>
@@ -90,7 +90,6 @@
                         headers:{
                             'Authorization':`Bearer ${this.currentUser.token}`
                         },
-
                     })
                     .then((response) => {
                         this.invitation = true

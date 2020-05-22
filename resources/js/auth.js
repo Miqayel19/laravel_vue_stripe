@@ -7,10 +7,11 @@ export function login(credentials){
     return new Promise((resolve,reject)=>{
         axios.post('/api/auth/login', credentials)
             .then(response => {
-                resolve(response.data);
-            })
-            .catch(err => {
-                reject('Wrong email or password ,try again.')
+                if(response.data.code === 200){
+                    resolve(response.data)
+                }else {
+                    reject(response.data);
+                }
             })
     })
 }

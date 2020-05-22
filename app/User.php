@@ -55,11 +55,14 @@ class User extends Authenticatable implements JWTSubject
     }
     public function accounts()
     {
-        return $this->belongsToMany('App\Account','account_users')->withPivot([
-        'role',
-        'confirmed',
-        'account_token',
-        'account_token_generated',
-    ]);
+        return $this->belongsToMany('App\Account','account_users','user_id','account_id')->withPivot([
+            'role',
+            'confirmed',
+            'account_token',
+            'account_token_generated',
+        ]);
+    }
+    public function cartItem(){
+        return $this->hasMany('App\CartItem');
     }
 }

@@ -9,9 +9,10 @@
                 <thead>
                     <th>ID</th>
                     <th>Name</th>
+                    <th>Period</th>
                     <th>Price</th>
                     <th>Subscribe</th>
-                    <th colspan="3">Actions</th>
+<!--                    <th colspan="3">Actions</th>-->
                 </thead>
             </template>
             <tbody>
@@ -24,19 +25,24 @@
                     <tr v-for="(plan,index) in plans" :key="index">
                         <td>{{ plan.id}}</td>
                         <td>{{ plan.name }}</td>
+                        <td>
+                            <select class="form-control" v-model="period" @change="changePeriod($event)">
+                                <option v-for="item in periods" :value=item>{{item}}</option>
+                            </select>
+                        </td>
                         <td>{{ plan.price }}</td>
                         <td>
                             <input type="submit" value="Add to Cart"  @click="addToCart(plan.id)" class="btn btn-success"/>
                         </td>
-                        <td>
-                            <router-link :to="`/plan/${plan.id}`">Show</router-link>
-                        </td>
-                        <td>
-                            <router-link :to="`/plan/${plan.id}/edit`">Edit</router-link>
-                        </td>
-                        <td>
-                             <input type="submit" value="Delete"  @click="deletePlan(plan.id,index)" class="btn btn-danger"/>
-                        </td>
+<!--                        <td>-->
+<!--                            <router-link :to="`/plan/${plan.id}`">Show</router-link>-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                            <router-link :to="`/plan/${plan.id}/edit`">Edit</router-link>-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                             <input type="submit" value="Delete"  @click="deletePlan(plan.id,index)" class="btn btn-danger"/>-->
+<!--                        </td>-->
                     </tr>
                 </template>
             </tbody>
@@ -52,6 +58,13 @@
                 return;
             }
             this.$store.dispatch('getPlans');
+        },
+        data() {
+            return {
+                period:null,
+                periods: ['Monthly', 'Thirdly', 'Annual'],
+                errors: []
+            };
         },
         computed:{
             plans(){
@@ -77,15 +90,18 @@
                 .catch(err => { console.error(err) })
             },
             addToCart(id){
-                axios.post(`/api/plan/addToCart/${id}`,{},{
+                axios.post(`/api/cartItem/new/${id}`,{},{
                     headers:{
                         "Authorization":`Bearer ${this.currentUser.token}`,
                     }
                 })
                 .then(res => {
                     console.log(res.data)
-                    // this.$store.commit('updatePlans', res.data.data);
+                    this.$store.commit('updateCartItems', res.data.data);
                 })
+            },
+            changePeriod(event){
+                console.log(event.target.value,'selected price');
             }
         }
     }

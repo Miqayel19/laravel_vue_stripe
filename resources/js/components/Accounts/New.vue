@@ -44,7 +44,7 @@
                 <tr>
                     <th>Phone</th>
                     <td>
-                        <input type="text" class="form-control" v-model="account.phone" placeholder="Phone"/>
+                        <input type="number" class="form-control" v-model="account.phone" placeholder="Phone"/>
                     </td>
                     <td>
                          <span v-if="errors.phone">
@@ -52,17 +52,6 @@
                         </span>
                     </td>
                 </tr>
-<!--                <tr>-->
-<!--                    <th>Stripe customer Id</th>-->
-<!--                    <td>-->
-<!--                        <input type="number" class="form-control" v-model="account.description" placeholder="Description"/>-->
-<!--                    </td>-->
-<!--&lt;!&ndash;                    <td>&ndash;&gt;-->
-<!--&lt;!&ndash;                         <span v-if="errors.description">&ndash;&gt;-->
-<!--&lt;!&ndash;                            {{ errors.description }}&ndash;&gt;-->
-<!--&lt;!&ndash;                        </span>&ndash;&gt;-->
-<!--&lt;!&ndash;                    </td>&ndash;&gt;-->
-<!--                </tr>-->
                 <tr>
                     <td>
                         <router-link to="/account" class="btn btn-danger">Cancel</router-link>
@@ -125,11 +114,11 @@
                         }
                     })
                     .then((response) => {
-                        this.$store.commit('updateAccounts',response.data.accounts);
-                        this.$router.push('/account');
+                        if(response.data.code === 200){
+                            this.$store.commit('updateAccounts',response.data.data);
+                            this.$router.push('/account');
+                        }
                     });
-                }else {
-                    console.log()
                 }
                 e.preventDefault();
             },

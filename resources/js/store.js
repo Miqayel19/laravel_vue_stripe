@@ -9,7 +9,9 @@ export default {
         registeredUser: null,
         reg_error:null,
         accounts:[],
-        plans:[]
+        plans:[],
+        cartItems:[],
+        price:null
     },
     getters:{
         welcome(state){
@@ -36,6 +38,12 @@ export default {
         plans(state){
             return state.plans
         },
+        cartItems(state){
+            return state.cartItems
+        },
+        price(state){
+            return state.price
+        }
 
     },
     mutations:{
@@ -48,7 +56,7 @@ export default {
             localStorage.setItem('user',JSON.stringify(state.currentUser))
         },
         loginFailed(state,payload){
-            state.auth_error = payload.error
+            state.auth_error = payload.data.error
         },
         regFailed(state,payload){
             state.reg_error = payload.error
@@ -67,6 +75,12 @@ export default {
         },
         updatePlans(state,payload){
             state.plans = payload
+        },
+        updateCartItems(state,payload){
+            state.cartItems = payload
+        },
+        updatePrice(state,payload){
+            state.price = payload
         }
     },
     actions:{
@@ -91,6 +105,17 @@ export default {
             })
                 .then((response) => {
                     context.commit('updatePlans', response.data.data);
+                })
+        },
+        getCartItems(context){
+            axios.get('/api/cartItems',{
+                headers:{
+                    'Authorization':`Bearer ${context.state.currentUser.token}`
+                }
+            })
+                .then((response) => {
+                    context.commit('updatePrice', response.data.total);
+                    context.commit('updateCartItems', response.data.data);
                 })
         }
     }
