@@ -6,6 +6,8 @@ use App\Http\Resources\FailedResource;
 use App\Http\Resources\CartItemResource;
 use App\Http\Resources\PriceResource;
 use App\Http\Contracts\CartItemInterface;
+use Illuminate\Http\Request;
+
 
 
 class CartItemController extends Controller
@@ -28,7 +30,7 @@ class CartItemController extends Controller
         $totalPrice = 0;
         $cartItems = $this->cartItemService->index();
         foreach ($cartItems as $item){
-            $totalPrice += $item->plan->price;
+            $totalPrice += $item->plan->price * $item->period;
         }
         return new PriceResource((object)['data' => $cartItems,'message' =>'Successfully fetched','total' => $totalPrice]);
     }
@@ -41,10 +43,12 @@ class CartItemController extends Controller
 //     */
 
 
-    public function store($id){
+    public function store(Request $request,$id){
+//        dd($request->all());
         $credentials = [
             'userID' => $this->user->id,
-            'planID' => $id
+            'planID' => $id,
+            'period' => $request->period,
         ];
         $cartItem = $this->cartItemService->create($credentials);
         if($cartItem){

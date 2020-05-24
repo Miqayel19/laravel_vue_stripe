@@ -20,6 +20,10 @@ class CartItemService implements CartItemInterface
     {
         return  $this->cartItem::where('id',$id)->delete();
     }
+    public function show($id)
+    {
+        return  $this->cartItem::where('id',$id)->first();
+    }
     public function create($credentials)
     {
         return $this->cartItem->create($credentials);

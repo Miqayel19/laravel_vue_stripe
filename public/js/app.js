@@ -2807,6 +2807,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'list',
   mounted: function mounted() {
@@ -3173,63 +3175,67 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'list',
   mounted: function mounted() {
-    if (this.plans.length) {
-      return;
-    }
+    var _this = this;
 
-    this.$store.dispatch('getPlans');
+    axios.get('/api/plan', {
+      headers: {
+        'Authorization': "Bearer ".concat(this.currentUser.token)
+      }
+    }).then(function (response) {
+      _this.plans = response.data.data;
+    });
   },
   data: function data() {
     return {
-      period: null,
-      periods: ['Monthly', 'Thirdly', 'Annual'],
+      period: 1,
+      plans: {
+        id: "",
+        name: "",
+        price: ""
+      },
+      price: null,
       errors: []
     };
   },
   computed: {
-    plans: function plans() {
-      return this.$store.getters.plans;
-    },
     currentUser: function currentUser() {
       return this.$store.getters.currentUser;
     }
   },
   methods: {
     deletePlan: function deletePlan(id, index) {
-      var _this = this;
+      var _this2 = this;
 
       axios["delete"]("/api/plan/".concat(id), {
         headers: {
           "Authorization": "Bearer ".concat(this.currentUser.token)
         }
       }).then(function (res) {
-        if (_this.plans && _this.plans.length > 0) {
-          _this.plans.splice(index, 1);
+        if (_this2.plans && _this2.plans.length > 0) {
+          _this2.plans.splice(index, 1);
         }
 
-        _this.$store.commit('updatePlans', res.data.data);
+        _this2.$store.commit('updatePlans', res.data.data);
       })["catch"](function (err) {
         console.error(err);
       });
     },
     addToCart: function addToCart(id) {
-      var _this2 = this;
+      var _this3 = this;
 
-      axios.post("/api/cartItem/new/".concat(id), {}, {
+      axios.post("/api/cartItem/new/".concat(id), {
+        'period': this.period
+      }, {
         headers: {
           "Authorization": "Bearer ".concat(this.currentUser.token)
         }
       }).then(function (res) {
-        console.log(res.data);
-
-        _this2.$store.commit('updateCartItems', res.data.data);
+        _this3.$store.commit('updateCartItems', res.data.data);
       });
-    },
-    changePeriod: function changePeriod(event) {
-      console.log(event.target.value, 'selected price');
     }
   }
 });
@@ -23305,7 +23311,11 @@ var render = function() {
                       _vm._v(" "),
                       _c("td", [_vm._v(_vm._s(cartItem.plan.name))]),
                       _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(cartItem.plan.price))]),
+                      _c("td", [
+                        _vm._v(_vm._s(cartItem.plan.price * cartItem.period))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(cartItem.period))]),
                       _vm._v(" "),
                       _c("td", [
                         _c("input", {
@@ -23358,6 +23368,8 @@ var staticRenderFns = [
       _c("th", [_vm._v("Plan Name")]),
       _vm._v(" "),
       _c("th", [_vm._v("Plan Price")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Period")]),
       _vm._v(" "),
       _c("th", { attrs: { colspan: "3" } }, [_vm._v("Actions")])
     ])
@@ -23851,6 +23863,47 @@ var render = function() {
       1
     ),
     _vm._v(" "),
+    _c("div", [
+      _c("p", [_vm._v("Period")]),
+      _vm._v(" "),
+      _c(
+        "select",
+        {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.period,
+              expression: "period"
+            }
+          ],
+          staticClass: "form-control",
+          on: {
+            change: function($event) {
+              var $$selectedVal = Array.prototype.filter
+                .call($event.target.options, function(o) {
+                  return o.selected
+                })
+                .map(function(o) {
+                  var val = "_value" in o ? o._value : o.value
+                  return val
+                })
+              _vm.period = $event.target.multiple
+                ? $$selectedVal
+                : $$selectedVal[0]
+            }
+          }
+        },
+        [
+          _c("option", { attrs: { value: "1" } }, [_vm._v("Monthly")]),
+          _vm._v(" "),
+          _c("option", { attrs: { value: "3" } }, [_vm._v("Quartly")]),
+          _vm._v(" "),
+          _c("option", { attrs: { value: "12" } }, [_vm._v("Annually")])
+        ]
+      )
+    ]),
+    _vm._v(" "),
     _c(
       "table",
       { staticClass: "table" },
@@ -23868,50 +23921,9 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(plan.name))]),
                     _vm._v(" "),
-                    _c("td", [
-                      _c(
-                        "select",
-                        {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.period,
-                              expression: "period"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          on: {
-                            change: [
-                              function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.period = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              },
-                              function($event) {
-                                return _vm.changePeriod($event)
-                              }
-                            ]
-                          }
-                        },
-                        _vm._l(_vm.periods, function(item) {
-                          return _c("option", { domProps: { value: item } }, [
-                            _vm._v(_vm._s(item))
-                          ])
-                        }),
-                        0
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(plan.price))]),
+                    _vm.period
+                      ? _c("td", [_vm._v(_vm._s(plan.price * _vm.period))])
+                      : _vm._e(),
                     _vm._v(" "),
                     _c("td", [
                       _c("input", {
@@ -23943,8 +23955,6 @@ var staticRenderFns = [
       _c("th", [_vm._v("ID")]),
       _vm._v(" "),
       _c("th", [_vm._v("Name")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Period")]),
       _vm._v(" "),
       _c("th", [_vm._v("Price")]),
       _vm._v(" "),
@@ -42270,7 +42280,7 @@ var user = Object(_auth__WEBPACK_IMPORTED_MODULE_0__["getLoggedinUser"])();
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\OpenServer\domains\laravel_vue_stripe\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\OSPanel\domains\laravel_stripe\resources\js\app.js */"./resources/js/app.js");
 
 
 /***/ })

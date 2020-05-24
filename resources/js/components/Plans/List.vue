@@ -3,13 +3,19 @@
         <div class="btn-wrapper">
             <router-link to="/plan/new" class="btn btn-primary">New</router-link>
         </div>
-
+        <div>
+            <p>Period</p>
+            <select class="form-control" v-model="period">
+                <option value="1">Monthly</option>
+                <option value="3">Quartly</option>
+                <option value="12">Annually</option>
+            </select>
+        </div>
         <table class="table">
             <template>
                 <thead>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Period</th>
                     <th>Price</th>
                     <th>Subscribe</th>
 <!--                    <th colspan="3">Actions</th>-->
@@ -25,12 +31,7 @@
                     <tr v-for="(plan,index) in plans" :key="index">
                         <td>{{ plan.id}}</td>
                         <td>{{ plan.name }}</td>
-                        <td>
-                            <select class="form-control" v-model="period" @change="changePeriod($event)">
-                                <option v-for="item in periods" :value=item>{{item}}</option>
-                            </select>
-                        </td>
-                        <td>{{ plan.price }}</td>
+                        <td v-if="period">{{ plan.price * period}}</td>
                         <td>
                             <input type="submit" value="Add to Cart"  @click="addToCart(plan.id)" class="btn btn-success"/>
                         </td>
@@ -54,25 +55,30 @@
     export default {
         name: 'list',
         mounted() {
-            if (this.plans.length) {
-                return;
-            }
-            this.$store.dispatch('getPlans');
+            axios.get('/api/plan',{
+                headers:{
+                    'Authorization':`Bearer ${this.currentUser.token}`
+                }
+            }).then((response) => {
+                    this.plans = response.data.data;
+                })
         },
         data() {
             return {
-                period:null,
-                periods: ['Monthly', 'Thirdly', 'Annual'],
-                errors: []
+                period:1,
+                plans: {
+                    id: "",
+                    name: "",
+                    price: ""
+                },
+                price:null,
+                errors: [],
             };
         },
         computed:{
-            plans(){
-                return this.$store.getters.plans
-            },
             currentUser(){
                 return this.$store.getters.currentUser;
-            }
+            },
         },
         methods:{
             deletePlan(id,index){
@@ -90,19 +96,15 @@
                 .catch(err => { console.error(err) })
             },
             addToCart(id){
-                axios.post(`/api/cartItem/new/${id}`,{},{
+                axios.post(`/api/cartItem/new/${id}`,{'period':this.period},{
                     headers:{
                         "Authorization":`Bearer ${this.currentUser.token}`,
                     }
                 })
                 .then(res => {
-                    console.log(res.data)
                     this.$store.commit('updateCartItems', res.data.data);
                 })
             },
-            changePeriod(event){
-                console.log(event.target.value,'selected price');
-            }
         }
     }
 </script>

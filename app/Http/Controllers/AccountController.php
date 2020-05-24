@@ -6,7 +6,6 @@ use App\Account;
 use App\Http\Resources\FailedResource;
 use App\Http\Resources\SuccessResource;
 use App\Http\Resources\AccountResource;
-use App\Http\Services\AccountService;
 use App\Http\Contracts\AccountInterface;
 use App\Jobs\SendInvitationEmail;
 use App\User;

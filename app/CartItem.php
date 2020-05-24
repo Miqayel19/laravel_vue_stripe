@@ -8,10 +8,11 @@ class CartItem extends Model
 {
     public $timestamps = false;
     protected $fillable = [
-        'userID', 'planID'
+        'userID', 'planID', 'period',
     ];
-    public function plan(){
-        return $this->belongsTo('App\Plan','planID');
+    public function plan()
+    {
+        return $this->belongsTo('App\Plan', 'planID');
     }
     public function user(){
         return $this->belongsTo('App\User','userID');

@@ -6,6 +6,7 @@
                     <th>ID</th>
                     <th>Plan Name</th>
                     <th>Plan Price</th>
+                    <th>Period</th>
                     <th colspan="3">Actions</th>
                 </thead>
             </template>
@@ -19,7 +20,8 @@
                     <tr v-for="(cartItem,index) in cartItems" :key="index">
                         <td>{{ cartItem.id}}</td>
                         <td>{{ cartItem.plan.name }}</td>
-                        <td>{{ cartItem.plan.price }}</td>
+                        <td>{{ cartItem.plan.price * cartItem.period  }}</td>
+                        <td>{{ cartItem.period }}</td>
                         <td>
                              <input type="submit" value="Delete"  @click="deleteCartItem(cartItem.id,index)" class="btn btn-danger"/>
                         </td>
