@@ -19,4 +19,15 @@ class Account extends Model
             'account_token_generated',
         ]);
     }
+    public function orders(){
+        return $this->hasMany('App\Order','accountID');
+    }
+    public function cartItems(){
+        return $this->hasMany('App\CartItem','accountID');
+    }
+    public function subscriptions(){
+        return $this->hasMany('App\Subscription','accountID');
+    }
+
+
 }

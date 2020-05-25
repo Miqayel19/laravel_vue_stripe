@@ -2203,7 +2203,7 @@ __webpack_require__.r(__webpack_exports__);
       if (this.myDataVariable) {
         this.$router.push('/');
         this.$store.commit('updateActiveAccount', id);
-      }
+      } else this.$store.commit('updateActiveAccount', null);
     }
   }
 });

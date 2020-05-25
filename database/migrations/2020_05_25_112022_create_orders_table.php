@@ -16,6 +16,7 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('userID')->unsigned();
+            $table->integer('accountID')->unsigned();
             $table->integer('price');
             $table->string('currency');
             $table->string('status');
@@ -23,6 +24,7 @@ class CreateOrdersTable extends Migration
         });
         Schema::table('orders', function($table) {
             $table->foreign('userID')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('accountID')->references('id')->on('accounts')->onDelete('cascade');
         });
     }
 
