@@ -2171,7 +2171,6 @@ __webpack_require__.r(__webpack_exports__);
     }
 
     this.$store.dispatch('getAccounts');
-    console.log(this.myDataVariable);
   },
   computed: {
     accounts: function accounts() {
@@ -2195,12 +2194,16 @@ __webpack_require__.r(__webpack_exports__);
           "Authorization": "Bearer ".concat(this.currentUser.token)
         }
       }).then(function (res) {
-        _this.myDataVariable;
-
         _this.$store.commit('updateAccounts', res.data.data);
       })["catch"](function (err) {
         console.error(err);
       });
+    },
+    changeState: function changeState(id) {
+      if (this.myDataVariable) {
+        this.$router.push('/');
+        this.$store.commit('updateActiveAccount', id);
+      }
     }
   }
 });
@@ -3388,7 +3391,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (res) {
         _this3.$store.commit('updateCartItems', res.data.data);
 
-        _this3.$router.push('cartItems');
+        _this3.$router.push('/cartItems');
       });
     }
   }
@@ -23632,6 +23635,11 @@ var render = function() {
                       "td",
                       [
                         _c("toggle-button", {
+                          on: {
+                            change: function($event) {
+                              return _vm.changeState(account.id)
+                            }
+                          },
                           model: {
                             value: _vm.myDataVariable,
                             callback: function($$v) {
@@ -44022,7 +44030,8 @@ var user = Object(_auth__WEBPACK_IMPORTED_MODULE_0__["getLoggedinUser"])();
     cartItems: [],
     price: null,
     orders: [],
-    subscriptions: []
+    subscriptions: [],
+    active_account_id: null
   },
   getters: {
     welcome: function welcome(state) {
@@ -44060,6 +44069,9 @@ var user = Object(_auth__WEBPACK_IMPORTED_MODULE_0__["getLoggedinUser"])();
     },
     subscriptions: function subscriptions(state) {
       return state.subscriptions;
+    },
+    active_account_id: function active_account_id(state) {
+      return state.active_account_id;
     }
   },
   mutations: {
@@ -44105,6 +44117,9 @@ var user = Object(_auth__WEBPACK_IMPORTED_MODULE_0__["getLoggedinUser"])();
     },
     updateSubscriptions: function updateSubscriptions(state, payload) {
       state.subscriptions = payload;
+    },
+    updateActiveAccount: function updateActiveAccount(state, payload) {
+      state.active_account_id = payload;
     }
   },
   actions: {

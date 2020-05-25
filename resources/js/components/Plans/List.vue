@@ -103,7 +103,7 @@
                 })
                 .then(res => {
                     this.$store.commit('updateCartItems', res.data.data);
-                    this.$router.push('cartItems');
+                    this.$router.push('/cartItems');
                 })
             },
         }

@@ -28,7 +28,7 @@
                         <td>{{account.pivot.role}}</td>
                         <td>{{account.pivot.confirmed}}</td>
                         <td>
-                            <toggle-button v-model="myDataVariable"/>
+                            <toggle-button v-model="myDataVariable" @change="changeState(account.id)"/>
                         </td>
                         <td>
                             <router-link :to="`/account/${account.id}`">Show</router-link>
@@ -54,7 +54,6 @@
                 return;
             }
             this.$store.dispatch('getAccounts');
-            console.log(this.myDataVariable);
         },
         computed:{
             accounts(){
@@ -77,10 +76,15 @@
                     }
                 })
                 .then(res => {
-                    this.myDataVariable
                     this.$store.commit('updateAccounts', res.data.data);
                 })
                 .catch(err => { console.error(err) })
+            },
+            changeState(id){
+                if(this.myDataVariable){
+                    this.$router.push('/');
+                    this.$store.commit('updateActiveAccount',id)
+                }
             }
         }
     }

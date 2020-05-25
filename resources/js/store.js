@@ -14,6 +14,7 @@ export default {
         price:null,
         orders:[],
         subscriptions:[],
+        active_account_id:null
     },
     getters:{
         welcome(state){
@@ -51,6 +52,9 @@ export default {
         },
         subscriptions(state){
             return state.subscriptions
+        },
+        active_account_id(state){
+            return state.active_account_id
         }
 
     },
@@ -95,6 +99,9 @@ export default {
         },
         updateSubscriptions(state,payload){
             state.subscriptions = payload
+        },
+        updateActiveAccount(state,payload){
+            state.active_account_id = payload
         },
     },
     actions:{
