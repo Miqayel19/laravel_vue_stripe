@@ -8,7 +8,7 @@ class CartItem extends Model
 {
     public $timestamps = false;
     protected $fillable = [
-        'userID', 'planID', 'period',
+        'userID', 'planID', 'period','accountID'
     ];
     public function plan()
     {

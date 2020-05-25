@@ -30,7 +30,7 @@
                     <div v-if="total">
                         <p>Summary:{{total}}</p>
                         <div>
-                            <input type="submit" value="Order"  @click="order()" class="btn btn-success"/>
+                            <input type="submit" value="Order"  @click="order(accountID)" class="btn btn-success"/>
                         </div>
                     </div>
 
@@ -49,6 +49,9 @@
         computed:{
             cartItems(){
                 return this.$store.getters.cartItems
+            },
+            accountID(){
+                return this.$store.getters.account_id
             },
             total(){
                 return this.$store.getters.price
@@ -78,8 +81,8 @@
                 }
                 this.$store.dispatch('getCartItems');
             },
-            order(){
-                axios.post(`/api/order/new`,{},{
+            order(accountID){
+                axios.post(`/api/order/new`,{account_id:accountID},{
                     headers:{
                         "Authorization":`Bearer ${this.currentUser.token}`,
                     }

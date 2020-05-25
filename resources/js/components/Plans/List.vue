@@ -3,6 +3,12 @@
         <div class="btn-wrapper">
             <router-link to="/plan/new" class="btn btn-primary">New</router-link>
         </div>
+        <div v-if="errors.length" class="alert alert-danger">
+            <b>Please fix following errors</b>
+            <ul>
+                <strong><li v-for="(error,index) in errors" :key="index">{{ error }}</li></strong>
+            </ul>
+        </div>
         <div>
             <p>Period</p>
             <select class="form-control" v-model="period">
@@ -33,7 +39,7 @@
                         <td>{{ plan.name }}</td>
                         <td v-if="period">{{ plan.price * period}}</td>
                         <td>
-                            <input type="submit" value="Add to Cart"  @click="addToCart(plan.id)" class="btn btn-success"/>
+                            <input type="submit" value="Add to Cart"  @click="addToCart(plan.id,accountId)" class="btn btn-success"/>
                         </td>
 <!--                        <td>-->
 <!--                            <router-link :to="`/plan/${plan.id}`">Show</router-link>-->
@@ -79,6 +85,9 @@
             currentUser(){
                 return this.$store.getters.currentUser;
             },
+            accountId(){
+                return this.$store.getters.active_account_id;
+            }
         },
         methods:{
             deletePlan(id,index){
@@ -95,15 +104,19 @@
                 })
                 .catch(err => { console.error(err) })
             },
-            addToCart(id){
-                axios.post(`/api/cartItem/new/${id}`,{'period':this.period},{
+            addToCart(id,accountId){
+                axios.post(`/api/cartItem/new/${id}`,{'period':this.period,'account_id':accountId},{
                     headers:{
                         "Authorization":`Bearer ${this.currentUser.token}`,
                     }
                 })
                 .then(res => {
-                    this.$store.commit('updateCartItems', res.data.data);
-                    this.$router.push('/cartItems');
+                    if(res.data.data.code === 200) {
+                        this.$store.commit('updateCartItems', res.data.data);
+                        this.$router.push('/cartItems');
+                    }else {
+                        this.errors.push(res.data.data.error);
+                    }
                 })
             },
         }

@@ -2833,6 +2833,9 @@ __webpack_require__.r(__webpack_exports__);
     cartItems: function cartItems() {
       return this.$store.getters.cartItems;
     },
+    accountID: function accountID() {
+      return this.$store.getters.account_id;
+    },
     total: function total() {
       return this.$store.getters.price;
     },
@@ -2865,10 +2868,12 @@ __webpack_require__.r(__webpack_exports__);
 
       this.$store.dispatch('getCartItems');
     },
-    order: function order() {
+    order: function order(accountID) {
       var _this2 = this;
 
-      axios.post("/api/order/new", {}, {
+      axios.post("/api/order/new", {
+        account_id: accountID
+      }, {
         headers: {
           "Authorization": "Bearer ".concat(this.currentUser.token)
         }
@@ -3331,6 +3336,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'list',
   mounted: function mounted() {
@@ -3359,6 +3370,9 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     currentUser: function currentUser() {
       return this.$store.getters.currentUser;
+    },
+    accountId: function accountId() {
+      return this.$store.getters.active_account_id;
     }
   },
   methods: {
@@ -3379,19 +3393,24 @@ __webpack_require__.r(__webpack_exports__);
         console.error(err);
       });
     },
-    addToCart: function addToCart(id) {
+    addToCart: function addToCart(id, accountId) {
       var _this3 = this;
 
       axios.post("/api/cartItem/new/".concat(id), {
-        'period': this.period
+        'period': this.period,
+        'account_id': accountId
       }, {
         headers: {
           "Authorization": "Bearer ".concat(this.currentUser.token)
         }
       }).then(function (res) {
-        _this3.$store.commit('updateCartItems', res.data.data);
+        if (res.data.data.code === 200) {
+          _this3.$store.commit('updateCartItems', res.data.data);
 
-        _this3.$router.push('/cartItems');
+          _this3.$router.push('/cartItems');
+        } else {
+          _this3.errors.push(res.data.data.error);
+        }
       });
     }
   }
@@ -24590,7 +24609,7 @@ var render = function() {
                             attrs: { type: "submit", value: "Order" },
                             on: {
                               click: function($event) {
-                                return _vm.order()
+                                return _vm.order(_vm.accountID)
                               }
                             }
                           })
@@ -25262,6 +25281,22 @@ var render = function() {
       1
     ),
     _vm._v(" "),
+    _vm.errors.length
+      ? _c("div", { staticClass: "alert alert-danger" }, [
+          _c("b", [_vm._v("Please fix following errors")]),
+          _vm._v(" "),
+          _c("ul", [
+            _c(
+              "strong",
+              _vm._l(_vm.errors, function(error, index) {
+                return _c("li", { key: index }, [_vm._v(_vm._s(error))])
+              }),
+              0
+            )
+          ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     _c("div", [
       _c("p", [_vm._v("Period")]),
       _vm._v(" "),
@@ -25330,7 +25365,7 @@ var render = function() {
                         attrs: { type: "submit", value: "Add to Cart" },
                         on: {
                           click: function($event) {
-                            return _vm.addToCart(plan.id)
+                            return _vm.addToCart(plan.id, _vm.accountId)
                           }
                         }
                       })

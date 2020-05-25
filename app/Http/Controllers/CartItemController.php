@@ -49,12 +49,18 @@ class CartItemController extends Controller
         $credentials = [
             'userID' => $this->user->id,
             'planID' => $id,
+            'accountID' => $request->account_id,
             'period' => $request->period,
-            'accountID' => $request->account_id
         ];
-        $cartItem = $this->cartItemService->create($credentials);
-        if($cartItem){
-            return new SuccessResource((object)['message' =>'Successfully added']);
+        if($request->account_id) {
+            $cartItem = $this->cartItemService->create($credentials);
+            if ($cartItem) {
+                return new SuccessResource((object)['message' => 'Successfully added']);
+            }
+        }
+        else{
+            return new FailedResource((object)['error' => 'Account ID cannot be null, please activate the Account']);
+
         }
     }
 
