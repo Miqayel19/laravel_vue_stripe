@@ -6,7 +6,6 @@ namespace App\Http\Services;
 use App\Http\Contracts\AccountInterface;
 use App\Account;
 use App\User;
-use Illuminate\Support\Str;
 
 class AccountService implements AccountInterface
 {

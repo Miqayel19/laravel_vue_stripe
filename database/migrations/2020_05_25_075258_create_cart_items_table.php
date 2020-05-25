@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CrateCartItemsTable extends Migration
+class CreateCartItemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -17,7 +17,6 @@ class CrateCartItemsTable extends Migration
             $table->increments('id');
             $table->integer('planID')->unsigned();
             $table->integer('userID')->unsigned();
-            $table->integer('price')->nullable();
             $table->string('period')->nullable();
         });
         Schema::table('cart_items', function($table) {
@@ -33,6 +32,6 @@ class CrateCartItemsTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('cart_items');
     }
 }

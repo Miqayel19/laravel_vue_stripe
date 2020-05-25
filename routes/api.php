@@ -45,4 +45,11 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('/cartItems/', 'CartItemController@index');
     Route::delete('/cartItem/{id}', 'CartItemController@destroy');
 
+    Route::post('/order/new', 'BillingController@addOrder');
+    Route::get('/orders/', 'BillingController@getOrders');
+    Route::post('/subscription/new/', 'BillingController@addSubscription');
+    Route::get('/subscriptions/', 'BillingController@getSubscriptions');
+
+
+
 });

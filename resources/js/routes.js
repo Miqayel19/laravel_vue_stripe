@@ -16,7 +16,11 @@ import PlanEdit from './components/Plans/Edit.vue';
 import CartItemMain from './components/CartItems/Main.vue';
 import CartItemList from './components/CartItems/List.vue';
 
+import OrdersMain from './components/Orders/Main.vue';
+import OrdersList from './components/Orders/List.vue';
 
+import SubscriptionsMain from './components/Subscriptions/Main.vue';
+import SubscriptionsList from './components/Subscriptions/List.vue';
 
 export const routes = [
     {
@@ -92,6 +96,26 @@ export const routes = [
             {
                 path:'/',
                 component:CartItemList
+            },
+        ]
+    },
+    {
+        path: '/orders',
+        component: OrdersMain,
+        children:[
+            {
+                path:'/',
+                component:OrdersList
+            },
+        ]
+    },
+    {
+        path: '/subscriptions',
+        component: SubscriptionsMain,
+        children:[
+            {
+                path:'/',
+                component:SubscriptionsList
             },
         ]
     }

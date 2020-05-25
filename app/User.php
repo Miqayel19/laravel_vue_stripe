@@ -63,6 +63,12 @@ class User extends Authenticatable implements JWTSubject
         ]);
     }
     public function cartItem(){
-        return $this->hasMany('App\CartItem');
+        return $this->hasMany('App\CartItem','userID');
+    }
+    public function order(){
+        return $this->hasMany('App\Order');
+    }
+    public function subscription(){
+        return $this->hasMany('App\Subscription');
     }
 }

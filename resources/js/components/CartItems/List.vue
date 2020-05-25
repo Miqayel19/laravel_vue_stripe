@@ -20,17 +20,17 @@
                     <tr v-for="(cartItem,index) in cartItems" :key="index">
                         <td>{{ cartItem.id}}</td>
                         <td>{{ cartItem.plan.name }}</td>
-                        <td>{{ cartItem.plan.price * cartItem.period  }}</td>
+                        <td>{{ cartItem.planPrice }}</td>
                         <td>{{ cartItem.period }}</td>
                         <td>
-                             <input type="submit" value="Delete"  @click="deleteCartItem(cartItem.id,index)" class="btn btn-danger"/>
+                             <input type="submit" value="Delete"  @click="deleteCartItem(cartItem.id,cartItem.planPrice,index)" class="btn btn-danger"/>
                         </td>
 
                     </tr>
                     <div v-if="total">
                         <p>Summary:{{total}}</p>
                         <div>
-                            <input type="submit" value="Order"  @click="order(cartItem.id,index)" class="btn btn-success"/>
+                            <input type="submit" value="Order"  @click="order()" class="btn btn-success"/>
                         </div>
                     </div>
 
@@ -43,11 +43,8 @@
 <script>
     export default {
         name: 'list',
-        mounted() {
-            if (this.cartItems.length) {
-                return;
-            }
-            this.$store.dispatch('getCartItems');
+        beforeMount() {
+           this.fetchData();
         },
         computed:{
             cartItems(){
@@ -61,21 +58,42 @@
             }
         },
         methods:{
-            deleteCartItem(id,index){
+            deleteCartItem(id,price,index){
                 axios.delete(`/api/cartItem/${id}`,{
                     headers:{
                         "Authorization":`Bearer ${this.currentUser.token}`,
                     }
                 })
                 .then(res => {
+                    this.$store.commit('updatePrice', this.total - price);
                     if(this.cartItems && this.cartItems.length > 0) {
                         this.cartItems.splice(index, 1);
                     }
-                    this.$store.commit('updateCartItems', res.data.data);
                 })
                 .catch(err => { console.error(err) })
             },
-        }
+            fetchData(){
+                if (this.cartItems.length) {
+                    return;
+                }
+                this.$store.dispatch('getCartItems');
+            },
+            order(){
+                axios.post(`/api/order/new`,{},{
+                    headers:{
+                        "Authorization":`Bearer ${this.currentUser.token}`,
+                    }
+                })
+                    .then(res => {
+                        this.$store.commit('updateCartItems', []);
+                        this.$router.push('/subscriptions');
+                    })
+                    .catch(err => { console.error(err) })
+            }
+        },
+        watch: {
+            '$route': 'fetchData'
+        },
     }
 </script>
 <style scoped>

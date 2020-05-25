@@ -11,6 +11,7 @@
                     <th>Name</th>
                     <th>Role</th>
                     <th>Confirmed</th>
+                    <th>State of Account</th>
                     <th colspan="3">Actions</th>
                 </thead>
             </template>
@@ -26,6 +27,9 @@
                         <td>{{ account.name }}</td>
                         <td>{{account.pivot.role}}</td>
                         <td>{{account.pivot.confirmed}}</td>
+                        <td>
+                            <toggle-button v-model="myDataVariable"/>
+                        </td>
                         <td>
                             <router-link :to="`/account/${account.id}`">Show</router-link>
                         </td>
@@ -50,6 +54,7 @@
                 return;
             }
             this.$store.dispatch('getAccounts');
+            console.log(this.myDataVariable);
         },
         computed:{
             accounts(){
@@ -57,6 +62,11 @@
             },
             currentUser(){
                 return this.$store.getters.currentUser;
+            }
+        },
+        data(){
+            return {
+                myDataVariable:false
             }
         },
         methods:{
@@ -67,6 +77,7 @@
                     }
                 })
                 .then(res => {
+                    this.myDataVariable
                     this.$store.commit('updateAccounts', res.data.data);
                 })
                 .catch(err => { console.error(err) })

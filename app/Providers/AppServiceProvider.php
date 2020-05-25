@@ -31,6 +31,14 @@ class AppServiceProvider extends ServiceProvider
             'App\Http\Contracts\CartItemInterface',
             'App\Http\Services\CartItemService'
         );
+        $this->app->bind(
+            'App\Http\Contracts\OrderInterface',
+            'App\Http\Services\OrderService'
+        );
+        $this->app->bind(
+            'App\Http\Contracts\SubscriptionInterface',
+            'App\Http\Services\SubscriptionService'
+        );
     }
 
     /**

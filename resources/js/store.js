@@ -11,7 +11,9 @@ export default {
         accounts:[],
         plans:[],
         cartItems:[],
-        price:null
+        price:null,
+        orders:[],
+        subscriptions:[],
     },
     getters:{
         welcome(state){
@@ -43,6 +45,12 @@ export default {
         },
         price(state){
             return state.price
+        },
+        orders(state){
+            return state.orders
+        },
+        subscriptions(state){
+            return state.subscriptions
         }
 
     },
@@ -81,7 +89,13 @@ export default {
         },
         updatePrice(state,payload){
             state.price = payload
-        }
+        },
+        updateOrders(state,payload){
+            state.orders = payload
+        },
+        updateSubscriptions(state,payload){
+            state.subscriptions = payload
+        },
     },
     actions:{
         login(context){
@@ -114,8 +128,30 @@ export default {
                 }
             })
                 .then((response) => {
+                    // console.log(response.data.total,'Total Price');
                     context.commit('updatePrice', response.data.total);
                     context.commit('updateCartItems', response.data.data);
+                })
+        },
+        getOrders(context){
+            axios.get('/api/orders',{
+                headers:{
+                    'Authorization':`Bearer ${context.state.currentUser.token}`
+                }
+            })
+                .then((response) => {
+                    console.log(response.data.data);
+                    context.commit('updateOrders', response.data.data);
+                })
+        },
+        getSubscriptions(context){
+            axios.get('/api/subscriptions',{
+                headers:{
+                    'Authorization':`Bearer ${context.state.currentUser.token}`
+                }
+            })
+                .then((response) => {
+                    context.commit('updateSubscriptions', response.data.data);
                 })
         }
     }
