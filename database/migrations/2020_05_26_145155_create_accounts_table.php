@@ -21,7 +21,7 @@ class CreateAccountsTable extends Migration
             $table->string('country');
             $table->string('status');
             $table->string('currency')->nullable();
-            $table->integer('stripe_customer_id')->nullable();
+            $table->string('stripe_customer_id')->nullable();
         });
     }
 

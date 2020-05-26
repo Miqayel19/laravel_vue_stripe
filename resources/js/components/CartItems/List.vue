@@ -1,5 +1,11 @@
 <template>
     <div>
+        <div v-if="errors.length" class="alert alert-danger">
+            <b>Please fix following errors</b>
+            <ul>
+                <strong><li v-for="(error,index) in errors" :key="index">{{ error }}</li></strong>
+            </ul>
+        </div>
         <table class="table">
             <template>
                 <thead>
@@ -51,7 +57,7 @@
                 return this.$store.getters.cartItems
             },
             accountID(){
-                return this.$store.getters.account_id
+                return this.$store.getters.active_account_id
             },
             total(){
                 return this.$store.getters.price
@@ -88,10 +94,19 @@
                     }
                 })
                     .then(res => {
-                        this.$store.commit('updateCartItems', []);
-                        this.$router.push('/subscriptions');
+                        if(res.data.data.code === 200) {
+                            this.$store.commit('updateCartItems', []);
+                            this.$router.push('/subscriptions');
+                        }else {
+                            this.errors.push(res.data.data.error);
+                        }
                     })
                     .catch(err => { console.error(err) })
+            }
+        },
+        data(){
+            return{
+                errors:[]
             }
         },
         watch: {

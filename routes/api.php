@@ -50,6 +50,12 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::post('/subscription/new/', 'BillingController@addSubscription');
     Route::get('/subscriptions/', 'BillingController@getSubscriptions');
 
+    Route::get('/card', 'CardController@index');
+    Route::get('/card/{id}', 'CardController@show');
+    Route::post('/card/new/', 'CardController@store');
+    Route::put('/card/{id}', 'CardController@update');
+    Route::delete('/card/{id}', 'CardController@destroy');
+
 
 
 });

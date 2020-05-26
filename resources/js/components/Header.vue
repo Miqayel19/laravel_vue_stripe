@@ -31,6 +31,9 @@
                         <li>
                             <router-link to="/subscriptions" class="nav-link">Subscriptions</router-link>
                         </li>
+                        <li>
+                            <router-link to="/card" class="nav-link">Cards</router-link>
+                        </li>
                         <li class="nav-item dropdown">
                             <a id="navdrop" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false" aria-haspopup="true">
                                 {{ currentUser.name }}

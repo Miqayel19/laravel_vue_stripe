@@ -22,6 +22,13 @@ import OrdersList from './components/Orders/List.vue';
 import SubscriptionsMain from './components/Subscriptions/Main.vue';
 import SubscriptionsList from './components/Subscriptions/List.vue';
 
+import CardMain from './components/Cards/Main.vue';
+import CardList from './components/Cards/List.vue';
+import CardNew from './components/Cards/New.vue';
+import Card from './components/Cards/Show.vue';
+import CardEdit from './components/Cards/Edit.vue';
+
+
 export const routes = [
     {
         path: '/',
@@ -118,5 +125,27 @@ export const routes = [
                 component:SubscriptionsList
             },
         ]
-    }
+    },
+    {
+        path: '/card',
+        component: CardMain,
+        children:[
+            {
+                path:'/',
+                component:CardList
+            },
+            {
+                path:'new',
+                component:CardNew
+            },
+            {
+                path:':id',
+                component:Card
+            },
+            {
+                path:':id/edit',
+                component:CardEdit
+            },
+        ]
+    },
 ]

@@ -39,6 +39,10 @@ class AppServiceProvider extends ServiceProvider
             'App\Http\Contracts\SubscriptionInterface',
             'App\Http\Services\SubscriptionService'
         );
+        $this->app->bind(
+            'App\Http\Contracts\CardInterface',
+            'App\Http\Services\CardService'
+        );
     }
 
     /**

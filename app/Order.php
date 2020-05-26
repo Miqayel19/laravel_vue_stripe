@@ -8,7 +8,7 @@ class Order extends Model
 {
     public $timestamps = false;
     protected $fillable = [
-        'userID','currency', 'price','date','status'
+        'userID','currency', 'price','date','status','accountID'
     ];
 
     public function user(){

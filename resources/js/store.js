@@ -55,7 +55,10 @@ export default {
         },
         active_account_id(state){
             return state.active_account_id
-        }
+        },
+        cards(state){
+            return state.cards
+        },
 
     },
     mutations:{
@@ -103,6 +106,9 @@ export default {
         updateActiveAccount(state,payload){
             state.active_account_id = payload
         },
+        updateCards(state,payload){
+            state.cards = payload
+        },
     },
     actions:{
         login(context){
@@ -135,7 +141,6 @@ export default {
                 }
             })
                 .then((response) => {
-                    // console.log(response.data.total,'Total Price');
                     context.commit('updatePrice', response.data.total);
                     context.commit('updateCartItems', response.data.data);
                 })
@@ -147,7 +152,6 @@ export default {
                 }
             })
                 .then((response) => {
-                    console.log(response.data.data);
                     context.commit('updateOrders', response.data.data);
                 })
         },
@@ -160,6 +164,16 @@ export default {
                 .then((response) => {
                     context.commit('updateSubscriptions', response.data.data);
                 })
-        }
+        },
+        getCards(context){
+            axios.get('/api/card',{
+                headers:{
+                    'Authorization':`Bearer ${context.state.currentUser.token}`
+                }
+            })
+                .then((response) => {
+                    context.commit('updateCards', response.data.data);
+                })
+        },
     }
 };
