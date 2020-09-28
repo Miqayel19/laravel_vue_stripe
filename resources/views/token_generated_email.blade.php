@@ -18,7 +18,7 @@
 <body>
 <div id="app">
     <h1> Welcome {{ $user->name }}, Your new token have successfully generated</h1>
-    <a href="http://stripe.loc/confirmation/{{$user->auth_token}}">Please follow  this link to confirm your registration</a>
+    <a href="{{$request->getSchemeAndHttpHost()}}/confirmation/{{$user->auth_token}}">Please follow  this link to confirm your registration</a>
 </div>
 </body>
 </html>

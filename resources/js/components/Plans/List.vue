@@ -9,7 +9,7 @@
                 <strong><li v-for="(error,index) in errors" :key="index">{{ error }}</li></strong>
             </ul>
         </div>
-        <div>
+        <div v-if="plans.length">
             <p>Period</p>
             <select class="form-control" v-model="period">
                 <option value="1">Monthly</option>
@@ -24,7 +24,6 @@
                     <th>Name</th>
                     <th>Price</th>
                     <th>Subscribe</th>
-<!--                    <th colspan="3">Actions</th>-->
                 </thead>
             </template>
             <tbody>

@@ -3865,7 +3865,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'list',
   mounted: function mounted() {
@@ -26624,46 +26623,48 @@ var render = function() {
         ])
       : _vm._e(),
     _vm._v(" "),
-    _c("div", [
-      _c("p", [_vm._v("Period")]),
-      _vm._v(" "),
-      _c(
-        "select",
-        {
-          directives: [
+    _vm.plans.length
+      ? _c("div", [
+          _c("p", [_vm._v("Period")]),
+          _vm._v(" "),
+          _c(
+            "select",
             {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.period,
-              expression: "period"
-            }
-          ],
-          staticClass: "form-control",
-          on: {
-            change: function($event) {
-              var $$selectedVal = Array.prototype.filter
-                .call($event.target.options, function(o) {
-                  return o.selected
-                })
-                .map(function(o) {
-                  var val = "_value" in o ? o._value : o.value
-                  return val
-                })
-              _vm.period = $event.target.multiple
-                ? $$selectedVal
-                : $$selectedVal[0]
-            }
-          }
-        },
-        [
-          _c("option", { attrs: { value: "1" } }, [_vm._v("Monthly")]),
-          _vm._v(" "),
-          _c("option", { attrs: { value: "3" } }, [_vm._v("Quartly")]),
-          _vm._v(" "),
-          _c("option", { attrs: { value: "12" } }, [_vm._v("Annually")])
-        ]
-      )
-    ]),
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.period,
+                  expression: "period"
+                }
+              ],
+              staticClass: "form-control",
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.period = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                }
+              }
+            },
+            [
+              _c("option", { attrs: { value: "1" } }, [_vm._v("Monthly")]),
+              _vm._v(" "),
+              _c("option", { attrs: { value: "3" } }, [_vm._v("Quartly")]),
+              _vm._v(" "),
+              _c("option", { attrs: { value: "12" } }, [_vm._v("Annually")])
+            ]
+          )
+        ])
+      : _vm._e(),
     _vm._v(" "),
     _c(
       "table",
@@ -45986,7 +45987,7 @@ var user = Object(_auth__WEBPACK_IMPORTED_MODULE_0__["getLoggedinUser"])();
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\OpenServer\domains\laravel_vue_stripe\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /var/www/laravel_vue_stripe/resources/js/app.js */"./resources/js/app.js");
 
 
 /***/ })
